@@ -37,6 +37,8 @@
     <Compile Include="JsonObjectTest.cs" />
     <Compile Include="Parser\InputTest.cs" />
     <Compile Include="Parser\ParserTest.cs" />
+    <Compile Include="StringJsonObjectTest.cs" />
+    <Compile Include="BooleanJsonObjectTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
