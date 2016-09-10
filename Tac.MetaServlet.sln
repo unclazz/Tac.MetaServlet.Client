@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Tac.MetaServlet.Json",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tac.MetaServlet.Rpc", "Tac.MetaServlet.Rpc\Tac.MetaServlet.Rpc.csproj", "{4193F200-5F63-48BC-B983-8BD5D61673F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Tac.MetaServlet.Rpc", "Test.Tac.MetaServlet.Rpc\Test.Tac.MetaServlet.Rpc.csproj", "{FD9B509F-64A9-4337-BA70-B69737AB9375}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,5 +27,9 @@ Global
 		{4193F200-5F63-48BC-B983-8BD5D61673F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4193F200-5F63-48BC-B983-8BD5D61673F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4193F200-5F63-48BC-B983-8BD5D61673F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD9B509F-64A9-4337-BA70-B69737AB9375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD9B509F-64A9-4337-BA70-B69737AB9375}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD9B509F-64A9-4337-BA70-B69737AB9375}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD9B509F-64A9-4337-BA70-B69737AB9375}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
