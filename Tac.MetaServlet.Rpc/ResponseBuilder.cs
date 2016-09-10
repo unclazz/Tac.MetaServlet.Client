@@ -11,6 +11,12 @@ namespace Tac.MetaServlet.Rpc
 		}
 		HttpStatusCode statusCode = HttpStatusCode.OK;
 		IJsonObject json;
+		IRequest req;
+		public ResponseBuilder Request(IRequest r)
+		{
+			req = r;
+			return this;
+		}
 		public ResponseBuilder StatusCode(HttpStatusCode c)
 		{
 			statusCode = c;
@@ -28,18 +34,18 @@ namespace Tac.MetaServlet.Rpc
 		}
 		public IResponse Build()
 		{
-			return new Response(statusCode, json);
+			return new Response(req, statusCode, json);
 		}
 
 	}
 
-	sealed class Response : IResponse
+	public sealed class Response : IResponse
 	{
 		public static ResponseBuilder Builder()
 		{
 			return new ResponseBuilder();
 		}
-
+		public IRequest Request { get; }
 		public IJsonObject Body { get; }
 		public HttpStatusCode StatusCode { get; }
 		public int ReturnCode
@@ -51,8 +57,9 @@ namespace Tac.MetaServlet.Rpc
 			}
 		}
 
-		internal Response(HttpStatusCode statusCode, IJsonObject body)
+		internal Response(IRequest req, HttpStatusCode statusCode, IJsonObject body)
 		{
+			Request = req;
 			StatusCode = statusCode;
 			Body = body;
 		}

@@ -6,6 +6,7 @@ namespace Tac.MetaServlet.Rpc
 {
 	public interface IResponse
 	{
+		IRequest Request { get; }
 		HttpStatusCode StatusCode { get; }
 		int ReturnCode { get; }
 		IJsonObject Body { get; }

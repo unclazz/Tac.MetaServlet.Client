@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
 using Tac.MetaServlet.Rpc;
+using System.Net;
+using Tac.MetaServlet.Json;
 
 namespace Test.Tac.MetaServlet.Rpc
 {
@@ -36,6 +38,50 @@ namespace Test.Tac.MetaServlet.Rpc
 			Assert.Throws<ArgumentNullException>(() => r0.Build());
 			Assert.That(r1.Build().Host, Is.EqualTo("foo"));
 			Assert.That(r1.Build().Uri, Is.EqualTo(new Uri("http://foo:8080/org.talend.administrator/metaServlet?e30=")));
+		}
+
+		[Test()]
+		public void Path_MustNotBeNull()
+		{
+			// Arrange
+			RequestBuilder r0 = Request.Builder().Path(null);
+			RequestBuilder r1 = Request.Builder().Path("/foo");
+
+			// Act
+			// Assert
+			Assert.Throws<ArgumentNullException>(() => r0.Build());
+			Assert.That(r1.Build().Path, Is.EqualTo("/foo"));
+			Assert.That(r1.Build().Uri, Is.EqualTo(new Uri("http://localhost:8080/foo?e30=")));
+		}
+
+		[Test()]
+		public void Send_ExecutesHttpRequestViaAgent_ThenReturnsIResponseInstance()
+		{
+			// Arrange
+			var req0 = Request
+				.Builder()
+				.Agent(MakeMockAgent(JsonObject
+				                     .Builder()
+				                     .Append("foo", "bar")
+				                     .Build()
+				                    ))
+				.Build();
+
+			// Act
+			IResponse resp0 = req0.Send();
+
+			// Assert
+			Assert.That(resp0.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+			Assert.That(resp0.Body.GetProperty("foo").StringValue(), Is.EqualTo("bar"));
+			Assert.That(resp0.Request, Is.EqualTo(req0));
+		}
+
+		Func<IRequest, IResponse> MakeMockAgent(IJsonObject json, 
+			HttpStatusCode statusCode = HttpStatusCode.OK)
+		{
+			return (IRequest arg) => {
+				return Response.Builder().Request(arg).StatusCode(statusCode).Body(json).Build();
+			};
 		}
 	}
 }
