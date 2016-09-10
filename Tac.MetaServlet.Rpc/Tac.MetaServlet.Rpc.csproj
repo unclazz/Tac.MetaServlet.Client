@@ -35,6 +35,7 @@
     <Compile Include="IResponse.cs" />
     <Compile Include="RequestBuilder.cs" />
     <Compile Include="ResponseBuilder.cs" />
+    <Compile Include="Assertions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tac.MetaServlet.Json\Tac.MetaServlet.Json.csproj">
