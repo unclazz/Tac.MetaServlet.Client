@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tac.MetaServlet.Rpc", "Tac.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Tac.MetaServlet.Rpc", "Test.Tac.MetaServlet.Rpc\Test.Tac.MetaServlet.Rpc.csproj", "{FD9B509F-64A9-4337-BA70-B69737AB9375}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tac.MetaServlet.Client", "Tac.MetaServlet.Client\Tac.MetaServlet.Client.csproj", "{5BA5B610-1518-4115-A03A-25CBD29FCE95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,5 +33,9 @@ Global
 		{FD9B509F-64A9-4337-BA70-B69737AB9375}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD9B509F-64A9-4337-BA70-B69737AB9375}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD9B509F-64A9-4337-BA70-B69737AB9375}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BA5B610-1518-4115-A03A-25CBD29FCE95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BA5B610-1518-4115-A03A-25CBD29FCE95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BA5B610-1518-4115-A03A-25CBD29FCE95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BA5B610-1518-4115-A03A-25CBD29FCE95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
