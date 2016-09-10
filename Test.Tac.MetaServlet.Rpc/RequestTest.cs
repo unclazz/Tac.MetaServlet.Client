@@ -61,10 +61,10 @@ namespace Test.Tac.MetaServlet.Rpc
 			var req0 = Request
 				.Builder()
 				.Agent(MakeMockAgent(JsonObject
-				                     .Builder()
-				                     .Append("foo", "bar")
-				                     .Build()
-				                    ))
+									 .Builder()
+									 .Append("foo", "bar")
+									 .Build()
+									))
 				.Build();
 
 			// Act
@@ -74,6 +74,27 @@ namespace Test.Tac.MetaServlet.Rpc
 			Assert.That(resp0.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 			Assert.That(resp0.Body.GetProperty("foo").StringValue(), Is.EqualTo("bar"));
 			Assert.That(resp0.Request, Is.EqualTo(req0));
+		}
+
+		[Test()]
+		public void SendAsync_ExecutesHttpRequestViaAgentAsynchronously_ThenReturnsIResponseInstance()
+		{
+			// Arrange
+			var req0 = Request
+				.Builder()
+				.Agent(MakeMockAgent(JsonObject
+									 .Builder()
+									 .Append("foo", "bar")
+									 .Build()
+									))
+				.Build();
+
+			// Act
+			// Assert
+			Assert.That(async () => {
+				var r = await req0.SendAsync();
+				return r.Body.GetProperty("foo").StringValue();
+			}, Is.EqualTo("bar"));
 		}
 
 		Func<IRequest, IResponse> MakeMockAgent(IJsonObject json, 
