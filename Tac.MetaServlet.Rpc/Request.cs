@@ -34,71 +34,145 @@ namespace Tac.MetaServlet.Rpc
 			}
 		};
 
+		/// <summary>
+		/// RPCリクエストのホスト名を指定します.
+		/// デフォルト値は<c>"localhost"</c>です。
+		/// </summary>
+		/// <param name="h">The height.</param>
 		public RequestBuilder Host(string h)
 		{
 			host = h;
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストのポート番号を指定します.
+		/// デフォルト値は<c>8080</c>です。
+		/// </summary>
+		/// <param name="p">ポート番号.</param>
 		public RequestBuilder Port(int p)
 		{
 			port = p;
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストのパス名を指定します.
+		/// デフォルト値は<c>"//org.talend.administrator/metaServlet"です。</c>
+		/// </summary>
+		/// <param name="p">パス名.</param>
 		public RequestBuilder Path(string p)
 		{
 			path = p;
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストのタイムアウト時間をミリ秒単位で指定します.
+		/// デフォルト値は<c>100,000</c>です。
+		/// </summary>
+		/// <param name="t">タイムアウト時間.</param>
 		public RequestBuilder Timeout(int t)
 		{
 			timeout = t;
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストするアクション名を指定します.
+		/// このメソッドの呼び出しは<c>Parameter("actionName", ...)</c>の呼び出しと等価です。
+		/// </summary>
+		/// <returns>ビルダー.</returns>
+		/// <param name="an">アクション名.</param>
 		public RequestBuilder ActionName(string an)
 		{
 			builer.Append("actionName", an);
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストする認証ユーザ名を指定します.
+		/// このメソッドの呼び出しは<c>Parameter("authUser", ...)</c>の呼び出しと等価です。
+		/// </summary>
+		/// <returns>ビルダー.</returns>
+		/// <param name="au">認証ユーザ名.</param>
 		public RequestBuilder AuthUser(string au)
 		{
 			builer.Append("authUser", au);
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストする認証パスワードを指定します.
+		/// このメソッドの呼び出しは<c>Parameter("authPass", ...)</c>の呼び出しと等価です。
+		/// </summary>
+		/// <returns>ビルダー.</returns>
+		/// <param name="ap">認証パスワード.</param>
 		public RequestBuilder AuthPass(string ap)
 		{
 			builer.Append("authPass", ap);
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストのパラメータを指定します.
+		/// </summary>
+		/// <param name="name">JSONプロパティ名.</param>
+		/// <param name="value">JSONプロパティ値.</param>
 		public RequestBuilder Parameter(string name, string value)
 		{
 			builer.Append(name, value);
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストのパラメータを指定します.
+		/// </summary>
+		/// <param name="name">JSONプロパティ名.</param>
+		/// <param name="value">JSONプロパティ値.</param>
 		public RequestBuilder Parameter(string name, long value)
 		{
 			builer.Append(name, value);
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストのパラメータを指定します.
+		/// </summary>
+		/// <param name="name">JSONプロパティ名.</param>
+		/// <param name="value">JSONプロパティ値.</param>
 		public RequestBuilder Parameter(string name, bool value)
 		{
 			builer.Append(name, value);
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストのパラメータを指定します.
+		/// </summary>
+		/// <param name="name">JSONプロパティ名.</param>
+		/// <param name="value">JSONプロパティ値.</param>
 		public RequestBuilder Parameter(string name, IJsonObject value)
 		{
 			builer.Append(name, value);
 			return this;
 		}
+		/// <summary>
+		/// RPCリクエストのパラメータを指定します.
+		/// 第2引数のアクションにはJSONプロパティ値となる<c>Object</c>型JSONノードを構築するためのビルダーが渡されます。
+		/// ビルダーを通じて当該JSONノードに対してプロパティを追加することができます。
+		/// </summary>
+		/// <param name="name">JSONプロパティ名.</param>
+		/// <param name="buildAction">JSONプロパティ値を構築するアクション.</param>
 		public RequestBuilder Parameter(string name, Action<JsonObjectBuilder> buildAction)
 		{
 			builer.Append(name, buildAction);
 			return this;
 		}
+		/// <summary>
+		/// <see cref="IRequest"/>が保持するリクエスト情報を元に実際にリクエストを行うデリゲートを指定します.
+		/// デフォルトのデリゲートを使用する場合はこのメソッドを呼び出す必要はありません。
+		/// デフォルトのデリゲートは<see cref="WebRequest"/>のサブクラスを利用してRPCリクエストを行います。
+		/// </summary>
+		/// <param name="alternative">Alternative.</param>
 		public RequestBuilder Agent(Func<IRequest, IResponse> alternative)
 		{
 			agent = alternative;
 			return this;
 		}
+		/// <summary>
+		/// <see cref="IRequest"/>のインスタンスを構築します.
+		/// </summary>
 		public IRequest Build()
 		{
 			return new Request(host, port, path, timeout, builer.Build(), agent);
