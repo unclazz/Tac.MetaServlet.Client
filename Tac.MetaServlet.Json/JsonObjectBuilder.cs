@@ -98,6 +98,10 @@ namespace Tac.MetaServlet.Json
 		/// <param name="buildAction">プロパティ値を構築するアクション.</param>
 		public JsonObjectBuilder Append(string propName, Action<JsonObjectBuilder> buildAction)
 		{
+			if (buildAction == null)
+			{
+				throw new ArgumentNullException(nameof(buildAction));
+			}
 			var b = new JsonObjectBuilder();
 			buildAction(b);
 			return Append(propName, b.Build());
@@ -195,9 +199,13 @@ namespace Tac.MetaServlet.Json
 	{
 		internal JsonProperty(string name, IJsonObject value)
 		{
-			if (name == null || value == null)
+			if (name == null)
 			{
-				throw new NullReferenceException();
+				throw new ArgumentNullException(nameof(name));
+			}
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
 			}
 			Name = name;
 			Value = value;

@@ -99,12 +99,12 @@ namespace Tac.MetaServlet.Json
 		/// <code>String</code>型のJSONノードを生成します.
 		/// </summary>
 		/// <param name="val">文字列.</param>
-		/// <exception cref="NullReferenceException">引数に<code>null</code>が指定された場合</exception>
+		/// <exception cref="ArgumentNullException">引数に<code>null</code>が指定された場合</exception>
 		public static IJsonObject Of(string val)
 		{
 			if (val == null)
 			{
-				throw new NullReferenceException();
+				throw new ArgumentNullException(nameof(val));
 			}
 			return val.Length == 0 ? emptyString : new StringJsonObject(val);
 		}
@@ -138,6 +138,10 @@ namespace Tac.MetaServlet.Json
 		/// <param name="items">配列の要素となるJSONノード.</param>
 		public static IJsonObject Of(IEnumerable<IJsonObject> items)
 		{
+			if (items == null)
+			{
+				throw new ArgumentNullException(nameof(items));
+			}
 			IList<IJsonObject> l = items.ToList().AsReadOnly();
 			return l.Count == 0 ? emptyArray : new ArrayJsonObject(l);
 		}
@@ -147,6 +151,10 @@ namespace Tac.MetaServlet.Json
 		/// <param name="items">配列の要素となるJSONノード.</param>
 		public static IJsonObject Of(params IJsonObject[] items)
 		{
+			if (items == null)
+			{
+				throw new ArgumentNullException(nameof(items));
+			}
 			IList<IJsonObject> l = items.ToList().AsReadOnly();
 			return l.Count == 0 ? emptyArray : new ArrayJsonObject(l);
 		}
@@ -156,6 +164,10 @@ namespace Tac.MetaServlet.Json
 		/// <param name="items">配列の要素となる文字列.</param>
 		public static IJsonObject Of(IEnumerable<string> items)
 		{
+			if (items == null)
+			{
+				throw new ArgumentNullException(nameof(items));
+			}
 			return Of(items.Select(Of));
 		}
 		/// <summary>
@@ -164,6 +176,10 @@ namespace Tac.MetaServlet.Json
 		/// <param name="items">配列の要素となる文字列.</param>
 		public static IJsonObject Of(params string[] items)
 		{
+			if (items == null)
+			{
+				throw new ArgumentNullException(nameof(items));
+			}
 			return Of(items.Select(Of));
 		}
 		/// <summary>
@@ -172,6 +188,10 @@ namespace Tac.MetaServlet.Json
 		/// <param name="items">配列の要素となるブール値.</param>
 		public static IJsonObject Of(IEnumerable<bool> items)
 		{
+			if (items == null)
+			{
+				throw new ArgumentNullException(nameof(items));
+			}
 			return Of(items.Select(Of));
 		}
 		/// <summary>
@@ -180,6 +200,10 @@ namespace Tac.MetaServlet.Json
 		/// <param name="items">配列の要素となるブール値.</param>
 		public static IJsonObject Of(params bool[] items)
 		{
+			if (items == null)
+			{
+				throw new ArgumentNullException(nameof(items));
+			}
 			return Of(items.Select(Of));
 		}
 		/// <summary>
@@ -188,6 +212,10 @@ namespace Tac.MetaServlet.Json
 		/// <param name="items">配列の要素となる数値.</param>
 		public static IJsonObject Of(IEnumerable<double> items)
 		{
+			if (items == null)
+			{
+				throw new ArgumentNullException(nameof(items));
+			}
 			return Of(items.Select(Of));
 		}
 		/// <summary>
@@ -196,6 +224,10 @@ namespace Tac.MetaServlet.Json
 		/// <param name="items">配列の要素となる数値.</param>
 		public static IJsonObject Of(params double[] items)
 		{
+			if (items == null)
+			{
+				throw new ArgumentNullException(nameof(items));
+			}
 			return Of(items.Select(Of));
 		}
 
@@ -285,7 +317,10 @@ namespace Tac.MetaServlet.Json
 				return ToString();
 			}
 		}
-		private static void FormatHelper(IJsonObject json, IJsonFormatOptions opts, StringBuilder buff, int depth)
+		private static void FormatHelper(IJsonObject json, 
+		                                 IJsonFormatOptions opts,
+		                                 StringBuilder buff,
+		                                 int depth)
 		{
 			if (json.Type != JsonObjectType.Array && !json.IsObjectExactly())
 			{
