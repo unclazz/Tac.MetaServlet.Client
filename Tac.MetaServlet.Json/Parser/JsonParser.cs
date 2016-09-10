@@ -4,6 +4,13 @@ using System.Text.RegularExpressions;
 
 namespace Tac.MetaServlet.Json.Parser
 {
+	/// <summary>
+	/// <see cref="Input"/>からJSON形式データを読み取るパーサーです。
+	/// このパーサーはシングルクォーテーションで囲われた<c>String</c>型リテラルや
+	/// シングルもしくはダブルクオーテーションが欠落したプロパティ名の使用を許容します。
+	/// 加えてまたパーサーはJSONを構成するトークンの間の任意の場所における
+	/// 行コメントおよびブロックコメントの使用を許容します。
+	/// </summary>
 	public sealed class JsonParser
 	{
 		private static readonly char WhiteSpace = ' ';
@@ -11,6 +18,11 @@ namespace Tac.MetaServlet.Json.Parser
 			new Regex("^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
 		private static readonly Regex BooleanPattern = new Regex("^(true|false)");
 
+		/// <summary>
+		/// JSON形式データを読み取ります。
+		/// </summary>
+		/// <param name="input">入力データ</param>
+		/// <exception cref="ParseException">読み取り中に構文エラーや予期せぬエラーが発生した場合</exception>
 		public IJsonObject Parse(Input input)
 		{
 			using (input)
@@ -87,7 +99,7 @@ namespace Tac.MetaServlet.Json.Parser
 		}
 		IJsonObject ParseBooleanNode(Input input)
 		{
-			string r = input.GoNext(BooleanPattern);
+			string r = input.ClipToken(BooleanPattern);
 			return JsonObject.Of(r.Equals("true"));
 		}
 		IJsonObject ParseNullNode(Input input)
@@ -97,7 +109,7 @@ namespace Tac.MetaServlet.Json.Parser
 		}
 		IJsonObject ParseNumberNode(Input input)
 		{
-			string r = input.GoNext(NumberPattern);
+			string r = input.ClipToken(NumberPattern);
 			return JsonObject.Of(double.Parse(r));
 		}
 		IJsonObject ParseArrayNode(Input input)

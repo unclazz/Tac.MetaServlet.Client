@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -142,9 +143,10 @@ namespace Tac.MetaServlet.Json.Parser
 		}
 		/// <summary>
 		/// 空白文字をスキップする.
-		/// <para>現在位置の文字およびそれに後続する文字が空白文字に該当する場合それらの文字は一括してスキップされる.
+		/// <para>現在位置の文字およびそれに後続する文字が空白文字に該当する場合それらの文字を一括してスキップする.
 		/// スキップ後現在位置は空白文字の次の非空白文字を指す.
-		/// このメソッドが空白文字とみなすのはコードポイントが32（半角スペース）以下のすべての文字である.</para>
+		/// このメソッドが空白文字とみなすのはコードポイントが32（半角スペース）以下のすべての文字である.
+		/// このメソッドはまた行コメントとブロックコメントもスキップする.</para>
 		/// </summary>
 		public void SkipWhitespace()
 		{
@@ -154,12 +156,47 @@ namespace Tac.MetaServlet.Json.Parser
 				{
 					GoNext();
 				}
+				else if (Current == '/')
+				{
+					SkipComment();
+				}
 				else
 				{
-					break;
+					return;
 				}
 			}
-			return;
+		}
+		/// <summary>
+		/// 行コメントおよびブロックコメントをスキップする.
+		/// </summary>
+		public void SkipComment()
+		{
+			Check('/');
+			GoNext();
+			if (Current == '/')
+			{
+				GoNextLine();
+				return;
+			}
+			else if (Current == '*')
+			{
+				GoNext();
+				while (!EndOfFile)
+				{
+					int p = RestOfLine.IndexOf("*/", StringComparison.CurrentCulture);
+					if (p == -1)
+					{
+						GoNextLine();
+					}
+					else {
+						GoNext(p + 2);
+						return;
+					}
+				}
+				throw new ParseException(this, "unclosed comment block.");
+			}
+			throw new ParseException(this, string.
+			Format("'/' or '*' expected but {0} found.", Current));
 		}
 		/// <summary>
 		/// 引数で指定されたワードを読み取りその分現在位置を前進させる.
@@ -167,16 +204,16 @@ namespace Tac.MetaServlet.Json.Parser
 		/// 引数で指定されたワードによる前方一致検索を行う.
 		/// そして検索が失敗した場合は<see cref="ParseException"/>をスローする.
 		/// </summary>
-		/// <returns>読み取り結果.</returns>
-		/// <param name="word">読み取り対象のワード.</param>
-		public string GoNext(string word)
+		/// <returns>前進後の現在位置の文字.</returns>
+		/// <param name="keyword">読み取り対象のワード.</param>
+		public char GoNext(string keyword)
 		{
-			if (RestOfLine.StartsWith(word, StringComparison.CurrentCulture))
+			if (RestOfLine.StartsWith(keyword, StringComparison.CurrentCulture))
 			{
-				GoNext(word.Length);
-				return word;
+				GoNext(keyword.Length);
+				return Current;
 			}
-			throw new ParseException(this, string.Format("\"{0}\" is not found.", word));
+			throw new ParseException(this, string.Format("keyword \"{0}\" is not found.", keyword));
 		}
 		/// <summary>
 		/// 引数で指定された正規表現パターンにマッチする文字列を読み取りその分現在位置を前進させる.
@@ -186,7 +223,7 @@ namespace Tac.MetaServlet.Json.Parser
 		/// </summary>
 		/// <returns>読み取り結果.</returns>
 		/// <param name="regex">読み取り対象の文字列を表わす正規表現パターン.</param>
-		public string GoNext(Regex regex)
+		public string ClipToken(Regex regex)
 		{
 			Match m = regex.Match(RestOfLine);
 			if (m.Success && m.Index == 0)
@@ -211,9 +248,17 @@ namespace Tac.MetaServlet.Json.Parser
 			}
 			return Current;
 		}
-
 		/// <summary>
-		/// 現在位置を1つ前進させてその位置にある文字を返す
+		/// 現在位置を次の行の先頭に移動させその位にある文字を返す.
+		/// </summary>
+		/// <returns>前進後の現在位置の文字.</returns>
+		public char GoNextLine()
+		{
+			GoNext(RestOfLine.Length);
+			return Current;
+		}
+		/// <summary>
+		/// 現在位置を1つ前進させてその位置にある文字を返す.
 		/// </summary>
 		/// <returns>前進後の現在位置の文字</returns>
 		public char GoNext()

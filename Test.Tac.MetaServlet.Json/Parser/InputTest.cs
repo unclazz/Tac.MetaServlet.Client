@@ -202,5 +202,47 @@ namespace Test.Tac.MetaServlet.Json
 			Assert.AreEqual("\n", s2);
 			Assert.AreEqual("def\n", s3);
 		}
+
+		[Test]
+		public void SkipWhitespace_SkipsSequenceOfCharactersBetween0x00And0x20()
+		{
+			// Arrange 
+			Input i0 = Input.FromString("\u0000\a\b\t\n\v\f\r def");
+			Input i1 = Input.FromString("abc\u0000\a\b\t\n\v\f\r def");
+			Input i2 = Input.FromString("abc\u0000\a\b\t\n\v\f\r def");
+
+			// Act
+			i0.SkipWhitespace();
+			i1.GoNext(3);
+			i1.SkipWhitespace();
+			i2.SkipWhitespace();
+
+			// Assert
+			Assert.That(i0.Current, Is.EqualTo('d'));
+			Assert.That(i1.Current, Is.EqualTo('d'));
+			Assert.That(i2.Current, Is.EqualTo('a'));
+		}
+
+		[Test]
+		public void SkipWhitespace_SkipsAlsoCommentLinesAndBlocks()
+		{
+			// Arrange 
+			Input i0 = Input.FromString(" //abc\ndef");
+			Input i1 = Input.FromString("//abc\n //def\r\n ghi");
+			Input i2 = Input.FromString(" /*abc*/def");
+			Input i3 = Input.FromString("/*abc*/ /*def\r\n*/ ghi");
+
+			// Act
+			i0.SkipWhitespace();
+			i1.SkipWhitespace();
+			i2.SkipWhitespace();
+			i3.SkipWhitespace();
+
+			// Assert
+			Assert.That(i0.Current, Is.EqualTo('d'));
+			Assert.That(i1.Current, Is.EqualTo('g'));
+			Assert.That(i2.Current, Is.EqualTo('d'));
+			Assert.That(i3.Current, Is.EqualTo('g'));
+		}
 	}
 }
