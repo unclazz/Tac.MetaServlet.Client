@@ -13,7 +13,7 @@ namespace Tac.MetaServlet.Json
 			return new ObjectJsonObject(props);
 		}
 
-		ObjectJsonObject(IEnumerable<IJsonProperty> props) : base(JsonObjectType.Object)
+		private ObjectJsonObject(IEnumerable<IJsonProperty> props) : base(JsonObjectType.Object)
 		{
 			this.props = props;
 		}

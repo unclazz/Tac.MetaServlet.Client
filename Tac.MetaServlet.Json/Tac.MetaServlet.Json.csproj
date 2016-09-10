@@ -43,6 +43,8 @@
     <Compile Include="BooleanJsonObject.cs" />
     <Compile Include="NumberJsonObjcet.cs" />
     <Compile Include="ArrayJsonObject.cs" />
+    <Compile Include="IJsonFormatOptions.cs" />
+    <Compile Include="JsonFormatOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Parser\" />

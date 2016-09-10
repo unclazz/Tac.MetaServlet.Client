@@ -9,7 +9,7 @@ namespace Tac.MetaServlet.Rpc
 			{
 				if (target == null)
 				{
-					throw new ArgumentNullException(string.Format("{0} must not be null.", targetLabel));
+					throw new ArgumentNullException(targetLabel);
 				}
 			}
 		}

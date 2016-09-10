@@ -273,6 +273,104 @@ namespace Tac.MetaServlet.Json
 			return fallback;
 		}
 
+		public string Format(IJsonFormatOptions opts)
+		{
+			if (opts.Indent)
+			{
+				StringBuilder buff = new StringBuilder();
+				FormatHelper(this, opts, buff, 0);
+				return buff.ToString().TrimStart();
+			}
+			else {
+				return ToString();
+			}
+		}
+		private static void FormatHelper(IJsonObject json, IJsonFormatOptions opts, StringBuilder buff, int depth)
+		{
+			if (json.Type != JsonObjectType.Array && !json.IsObjectExactly())
+			{
+				buff.Append(json.ToString());
+				return;
+			}
+
+			if (json.Type == JsonObjectType.Array)
+			{
+				buff.Append('[');
+				bool empty = true;
+				foreach (IJsonObject item in json.ArrayValue())
+				{
+					if (empty)
+					{
+						empty = false;
+					}else{
+						buff.Append(',');
+					}
+					FormatHelperNewLine(opts, buff);
+					FormatHelperIndent(opts, buff, depth + 1);
+					FormatHelper(item, opts, buff, depth + 1);
+				}
+				if (!empty)
+				{
+					FormatHelperNewLine(opts, buff);
+					FormatHelperIndent(opts, buff, depth);
+				}
+				buff.Append(']');
+			}
+			else if (json.Type == JsonObjectType.Object)
+			{
+				buff.Append('{');
+				bool empty = true;
+				foreach (IJsonProperty p in json.Properties)
+				{
+					if (empty)
+					{
+						empty = false;
+					}
+					else {
+						buff.Append(',');
+					}
+					FormatHelperNewLine(opts, buff);
+					FormatHelperIndent(opts, buff, depth + 1);
+					buff.Append(Quotes(p.Name)).Append(' ').Append(':').Append(' ');
+					FormatHelper(p.Value, opts, buff, depth + 1);
+				}
+				if (!empty)
+				{
+					FormatHelperNewLine(opts, buff);
+					FormatHelperIndent(opts, buff, depth);
+				}
+				buff.Append('}');
+			}
+		}
+		private static void FormatHelperIndent(IJsonFormatOptions opts, StringBuilder buff, int depth)
+		{
+			if (!opts.Indent || depth == 0)
+			{
+				return;
+			}
+			if (opts.SoftTabs)
+			{
+				for (int i = 0; i < opts.TabWidth * depth; i++)
+				{
+					buff.Append(' ');
+				}
+			}
+			else {
+				for (int i = 0; i < depth; i++)
+				{
+					buff.Append('\t');
+				}
+			}
+		}
+		private static void FormatHelperNewLine(IJsonFormatOptions opts, StringBuilder buff)
+		{
+			if (!opts.Indent)
+			{
+				return;
+			}
+			buff.Append(opts.NewLine);
+		}
+
 		public JsonObjectType Type { get; }
 
 		public virtual IEnumerable<IJsonProperty> Properties

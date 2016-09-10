@@ -128,6 +128,11 @@ namespace Tac.MetaServlet.Json
 		/// </summary>
 		/// <returns>リテラル表現.</returns>
 		string ToString();
+		/// <summary>
+		/// このJSONノードの整形されたリテラル表現を返します.
+		/// </summary>
+		/// <param name="opts">整形オプション.</param>
+		string Format(IJsonFormatOptions opts);
 	}
 
 	/// <summary>

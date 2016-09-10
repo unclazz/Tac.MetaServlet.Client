@@ -30,6 +30,36 @@ namespace Test.Tac.MetaServlet.Json
 			Assert.That(r5.TypeIs(JsonObjectType.String), Is.True);
 			Assert.That(r6.TypeIs(JsonObjectType.Number), Is.True);
 		}
+		[Test()]
+		public void Format_ReturnsFormattedLiteral()
+		{
+			// Arrange
+			IJsonObject j0 = JsonObject.FromString("{foo: 'fooval', bar :[], baz: { baz2: [0,1,2, {}] }}");
+			IJsonObject j1 = JsonObject.Builder().Build();
+			IJsonObject j2 = JsonObject.OfNull();
+			IJsonFormatOptions opts = JsonFormatOptions.Builder().Indent(true).NewLine("\n").Build();
+
+			// Act
+			string s0 = j0.Format(opts);
+			string s1 = j1.Format(opts);
+			string s2 = j2.Format(opts);
+
+			// Assert
+			Assert.AreEqual("{\n" +
+			                "\t\"foo\" : \"fooval\",\n" +
+			                "\t\"bar\" : [],\n" +
+			                "\t\"baz\" : {\n" +
+							"\t\t\"baz2\" : [\n" +
+			                "\t\t\t0,\n" +
+			                "\t\t\t1,\n" +
+			                "\t\t\t2,\n" +
+			                "\t\t\t{}\n" +
+							"\t\t]\n" +
+							"\t}\n" +
+			                "}", s0);
+			Assert.AreEqual("{}", s1);
+			Assert.AreEqual("null", s2);
+		}
 	}
 }
 

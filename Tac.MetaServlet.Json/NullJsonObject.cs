@@ -4,7 +4,7 @@
 	{
 		public static readonly IJsonObject Instance = new NullJsonObject();
 
-		NullJsonObject() : base(JsonObjectType.Null)
+		private NullJsonObject() : base(JsonObjectType.Null)
 		{
 
 		}
