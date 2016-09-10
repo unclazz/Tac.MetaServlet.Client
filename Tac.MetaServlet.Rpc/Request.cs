@@ -6,6 +6,9 @@ using Tac.MetaServlet.Json;
 
 namespace Tac.MetaServlet.Rpc
 {
+	/// <summary>
+	/// <see cref="IRequest"/>のインスタンスを生成するためのビルダーです.
+	/// </summary>
 	public sealed class RequestBuilder
 	{
 		internal RequestBuilder()
@@ -102,33 +105,47 @@ namespace Tac.MetaServlet.Rpc
 		}
 	}
 
+	/// <summary>
+	/// <see cref="IRequest"/>の実装クラスです.
+	/// </summary>
 	public sealed class Request : IRequest
 	{
+		/// <summary>
+		/// ビルダー・オブジェクトを返します.
+		/// </summary>
 		public static RequestBuilder Builder()
 		{
 			return new RequestBuilder();
 		}
+
+		private Uri uriCache;
+		private string actionNameCache;
+		private string authUserCache;
+		private string authPassCache;
 
 		public string Host { get; }
 		public int Port { get; }
 		public string Path { get; }
 		public int Timeout { get; }
 		public IJsonObject Parameters { get; }
-
 		public Uri Uri
 		{
 			get
 			{
-				byte[] bs = Encoding.UTF8.GetBytes(Parameters.ToString());
-				return new Uri(new StringBuilder()
-							   .Append("http://")
-							   .Append(Host)
-				               .Append(':')
-							   .Append(Port)
-							   .Append(Path)
-							   .Append('?')
-							   .Append(Convert.ToBase64String(bs))
-							   .ToString());
+				if (uriCache == null)
+				{
+					byte[] bs = Encoding.UTF8.GetBytes(Parameters.ToString());
+					uriCache = new Uri(new StringBuilder()
+								   .Append("http://")
+								   .Append(Host)
+								   .Append(':')
+								   .Append(Port)
+								   .Append(Path)
+								   .Append('?')
+								   .Append(Convert.ToBase64String(bs))
+								   .ToString());
+				}
+				return uriCache;
 			}
 		}
 
@@ -136,7 +153,11 @@ namespace Tac.MetaServlet.Rpc
 		{
 			get
 			{
-				return Parameters.GetProperty("actionName").StringValue();
+				if (actionNameCache == null)
+				{
+					actionNameCache = Parameters.GetProperty("actionName").StringValue();
+				}
+				return actionNameCache;
 			}
 		}
 
@@ -144,7 +165,11 @@ namespace Tac.MetaServlet.Rpc
 		{
 			get
 			{
-				return Parameters.GetProperty("authUser").StringValue();
+				if (authUserCache == null)
+				{
+					authUserCache = Parameters.GetProperty("authUser").StringValue();
+				}
+				return authUserCache;
 			}
 		}
 
@@ -152,7 +177,11 @@ namespace Tac.MetaServlet.Rpc
 		{
 			get
 			{
-				return Parameters.GetProperty("authPass").StringValue();
+				if (authPassCache == null)
+				{
+					authPassCache = Parameters.GetProperty("authPass").StringValue();
+				}
+				return authPassCache;
 			}
 		}
 

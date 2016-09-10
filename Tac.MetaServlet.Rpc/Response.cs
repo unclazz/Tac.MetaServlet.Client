@@ -4,6 +4,9 @@ using Tac.MetaServlet.Json;
 
 namespace Tac.MetaServlet.Rpc
 {
+	/// <summary>
+	/// <see cref="IResponse"/>のインスタンスを構築するためのビルダーです.
+	/// </summary>
 	public sealed class ResponseBuilder
 	{
 		internal ResponseBuilder()
@@ -39,8 +42,14 @@ namespace Tac.MetaServlet.Rpc
 
 	}
 
+	/// <summary>
+	/// <see cref="IResponse"/>の実装クラスです.
+	/// </summary>
 	public sealed class Response : IResponse
 	{
+		/// <summary>
+		/// ビルダー・オブジェクトを返します.
+		/// </summary>
 		public static ResponseBuilder Builder()
 		{
 			return new ResponseBuilder();
@@ -63,7 +72,6 @@ namespace Tac.MetaServlet.Rpc
 			StatusCode = statusCode;
 			Body = body;
 		}
-
 	}
 }
 
