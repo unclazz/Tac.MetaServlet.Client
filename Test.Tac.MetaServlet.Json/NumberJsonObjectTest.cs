@@ -195,6 +195,14 @@ namespace Test.Tac.MetaServlet.Json
 				json.GetProperty("foo");
 			});
 		}
+
+		[Test()]
+		public void Equals_ComparesBasedOnValueWrappedByJsonObject()
+		{
+			Assert.That(JsonObject.Of(1).Equals(JsonObject.Of(1.0)), Is.True);
+			Assert.That(JsonObject.Of(0).Equals(JsonObject.Of(0.0)), Is.True);
+			Assert.That(JsonObject.Of(0).Equals(JsonObject.Of(0.1)), Is.False);
+		}
 	}
 }
 

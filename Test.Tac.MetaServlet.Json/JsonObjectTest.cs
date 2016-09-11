@@ -60,6 +60,17 @@ namespace Test.Tac.MetaServlet.Json
 			Assert.AreEqual("{}", s1);
 			Assert.AreEqual("null", s2);
 		}
+
+		[Test()]
+		public void Equals_ComparesBasedOnValueWrappedByJsonObject()
+		{
+			Assert.True(JsonObject.FromString("{foo:123,bar:456}")
+			            .Equals(JsonObject.FromString("{foo:123,bar:456}")));
+			Assert.True(JsonObject.FromString("{foo:123,bar:456}")
+			            .Equals(JsonObject.FromString("{bar:456,foo:123}")));
+			Assert.False(JsonObject.FromString("{foo:123,bar:456}")
+			            .Equals(JsonObject.FromString("{foo:456,bar:123}")));
+		}
 	}
 }
 

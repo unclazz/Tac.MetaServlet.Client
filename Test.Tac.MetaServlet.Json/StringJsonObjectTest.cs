@@ -189,6 +189,14 @@ namespace Test.Tac.MetaServlet.Json
 			Assert.That(json0.NumberValue(1), Is.EqualTo(1));
 			Assert.That(json1.NumberValue(2), Is.EqualTo(2));
 		}
+
+		[Test()]
+		public void Equals_ComparesBasedOnValueWrappedByJsonObject()
+		{
+			Assert.That(JsonObject.Of("abc").Equals(JsonObject.Of("abc")), Is.True);
+			Assert.That(JsonObject.Of(string.Empty).Equals(JsonObject.Of("")), Is.True);
+			Assert.That(JsonObject.Of("abc").Equals(JsonObject.Of("abcd")), Is.False);
+		}
 	}
 }
 

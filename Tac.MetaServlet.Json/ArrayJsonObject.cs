@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Tac.MetaServlet.Json
 {
@@ -44,7 +45,7 @@ namespace Tac.MetaServlet.Json
 		public override bool Equals(object obj)
 		{
 			var other = obj as ArrayJsonObject;
-			return other != null && this.items.Equals(other.items);
+			return other != null && this.items.SequenceEqual(other.items);
 		}
 	}
 }
