@@ -67,6 +67,7 @@
     <Compile Include="Parser\ParserTest.cs" />
     <Compile Include="StringJsonObjectTest.cs" />
     <Compile Include="BooleanJsonObjectTest.cs" />
+    <Compile Include="NumberJsonObjectTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="InputTest.txt" />
