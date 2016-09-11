@@ -37,6 +37,15 @@ namespace Tac.MetaServlet.Json
 			}
 			return literalBuff;
 		}
+		public override int GetHashCode()
+		{
+			return items.GetHashCode();
+		}
+		public override bool Equals(object obj)
+		{
+			var other = obj as ArrayJsonObject;
+			return other != null && this.items.Equals(other.items);
+		}
 	}
 }
 

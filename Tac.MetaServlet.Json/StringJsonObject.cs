@@ -25,6 +25,15 @@
 			}
 			return literalBuff;
 		}
+		public override int GetHashCode()
+		{
+			return val.GetHashCode();
+		}
+		public override bool Equals(object obj)
+		{
+			var other = obj as StringJsonObject;
+			return other != null && this.val.Equals(other.val);
+		}
 	}
 }
 

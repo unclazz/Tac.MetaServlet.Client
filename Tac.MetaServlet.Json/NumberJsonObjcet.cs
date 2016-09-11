@@ -21,6 +21,15 @@
 		{
 			return val.ToString();
 		}
+		public override int GetHashCode()
+		{
+			return val.GetHashCode();
+		}
+		public override bool Equals(object obj)
+		{
+			var other = obj as NumberJsonObject;
+			return other != null && this.val.Equals(other.val);
+		}
 	}
 }
 

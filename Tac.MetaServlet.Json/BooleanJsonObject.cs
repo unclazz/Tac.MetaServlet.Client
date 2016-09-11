@@ -20,6 +20,15 @@
 		{
 			return val ? "true" : "false";
 		}
+		public override int GetHashCode()
+		{
+			return val ? 1 : 0;
+		}
+		public override bool Equals(object obj)
+		{
+			var other = obj as BooleanJsonObject;
+			return other != null && this.val == other.val;
+		}
 	}
 }
 
