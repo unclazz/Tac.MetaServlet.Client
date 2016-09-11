@@ -184,7 +184,7 @@ namespace Tac.MetaServlet.Json
 		/// <param name="propName">プロパティ名.</param>
 		public JsonObjectBuilder AppendEmptyArray(string propName)
 		{
-			return Append(propName, JsonObject.Of(JsonObject.Of(new IJsonObject[0])));
+			return Append(propName, JsonObject.Of(new IJsonObject[0]));
 		}
 		/// <summary>
 		/// JSONノードを構築します.

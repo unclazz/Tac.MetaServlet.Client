@@ -69,6 +69,7 @@
     <Compile Include="BooleanJsonObjectTest.cs" />
     <Compile Include="NumberJsonObjectTest.cs" />
     <Compile Include="ArrayJsonObjectTest.cs" />
+    <Compile Include="JsonObjectBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="InputTest.txt" />
