@@ -63,5 +63,5 @@ JSONをプログラム・ロジックにより構築する場合は`JsonObject.O
 `JsonObject.Builder()`メソッドを通じて得られるビルダーを使用してください。
 
 ファイルやストリームからパースしたものであれプログラムにより構築したものであれ、
-`IJsonObject`インターフェースが提供する`ToString()`メソッドや`Format'(IJsonFormatOptions)`メソッドによって
+`IJsonObject`インターフェースが提供する`ToString()`メソッドや`Format(IJsonFormatOptions)`メソッドによって
 JSONの文字列表現を得ることができます。
