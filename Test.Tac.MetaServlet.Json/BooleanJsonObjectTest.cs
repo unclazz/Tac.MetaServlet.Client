@@ -168,6 +168,32 @@ namespace Test.Tac.MetaServlet.Json
 				json.GetProperty("foo");
 			});
 		}
+
+		[Test()]
+		public void NumberValue_ThrowsException()
+		{
+			// Arrange
+			IJsonObject json0 = JsonObject.Of(true);
+			IJsonObject json1 = JsonObject.Of(false);
+
+			// Act
+			// Assert
+			Assert.Throws<ApplicationException>(() => json0.NumberValue());
+			Assert.Throws<ApplicationException>(() => json1.NumberValue());
+		}
+
+		[Test()]
+		public void NumberValue_ReturnsFallbackValue()
+		{
+			// Arrange
+			IJsonObject json0 = JsonObject.Of(false);
+			IJsonObject json1 = JsonObject.Of(true);
+
+			// Act
+			// Assert
+			Assert.That(json0.NumberValue(1), Is.EqualTo(1));
+			Assert.That(json1.NumberValue(2), Is.EqualTo(2));
+		}
 	}
 }
 

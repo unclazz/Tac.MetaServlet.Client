@@ -159,6 +159,28 @@ namespace Test.Tac.MetaServlet.Json
 				json.GetProperty("foo");
 			});
 		}
+
+		[Test()]
+		public void NumberValue_ThrowsException()
+		{
+			// Arrange
+			IJsonObject json0 = JsonObject.OfNull();
+
+			// Act
+			// Assert
+			Assert.Throws<ApplicationException>(() => json0.NumberValue());
+		}
+
+		[Test()]
+		public void NumberValue_ReturnsFallbackValue()
+		{
+			// Arrange
+			IJsonObject json0 = JsonObject.OfNull();
+
+			// Act
+			// Assert
+			Assert.That(json0.NumberValue(1), Is.EqualTo(1));
+		}
 	}
 }
 
