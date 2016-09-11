@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Tac.MetaServlet.Client
 {
@@ -17,18 +18,22 @@ namespace Tac.MetaServlet.Client
 
 		public Parameters()
 		{
+            RemoteHost = "localhost";
+            RemotePath = "/org.talend.administrator/metaServlet";
+            RemotePort = 8080;
+            RequestTimeout = 100000;
 			Others = new List<string>();
 		}
 
-		public IEnumerable<ParameterMeta> GetMetaData()
+        public IEnumerable<ParameterMeta> GetMetaData()
 		{
 			if (metaList.Count == 0)
 			{
-				metaList.Add(meta("/h", "Remote.Host", (obj) => RemoteHost = obj));
-				metaList.Add(meta("/p", "Remote.Port", (obj) => RemotePort = int.Parse(obj)));
-				metaList.Add(meta("/q", "Remote.Path", (obj) => RemotePath = obj));
-				metaList.Add(meta("/t", "Request.Timeout", (obj) => RequestTimeout = int.Parse(obj)));
-				metaList.Add(meta("/j", "Request.Json", (obj) => RequestJson = obj, true));
+                metaList.Add(meta("/J", "Request.Json", (obj) => RequestJson = obj, true));
+                metaList.Add(meta("/H", "Remote.Host", (obj) => RemoteHost = obj));
+				metaList.Add(meta("/P", "Remote.Port", (obj) => RemotePort = int.Parse(obj)));
+				metaList.Add(meta("/Q", "Remote.Path", (obj) => RemotePath = obj));
+				metaList.Add(meta("/T", "Request.Timeout", (obj) => RequestTimeout = int.Parse(obj)));
 			}
 			return metaList.AsReadOnly();
 		}

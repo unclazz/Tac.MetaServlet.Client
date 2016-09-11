@@ -1,0 +1,6 @@
+{
+  "actionName": "getTaskStatus",
+  "authUser": "username",
+  "authPass": "password",
+  "taskId": 64
+}

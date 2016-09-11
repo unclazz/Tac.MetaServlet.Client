@@ -1,0 +1,7 @@
+{
+  "actionName": "getTaskIdByName",
+  "authUser": "username",
+  "authPass": "password",
+  "taskName": "foo",
+  "label": "bar"
+}
