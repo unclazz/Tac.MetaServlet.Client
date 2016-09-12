@@ -6,7 +6,7 @@ C#のバージョンは5.0をターゲットとしています。
 
 ソリューションとその成果物はMITライセンスのもとで公開しています。
 これらはいずれもリポジトリのコミッターが個人的に製造しているものですので、
-TACもしくはTalendの提供元からサポートやTACの仕様変更に対するAPIの追随の保証は一切ありません。
+TACの提供元からのサポートやTACの仕様変更に対するAPIの追随の保証は一切ありません。
 
 ## Tac.MetaServlet.Client
 
@@ -65,3 +65,4 @@ JSONをプログラム・ロジックにより構築する場合は`JsonObject.O
 ファイルやストリームからパースしたものであれプログラムにより構築したものであれ、
 `IJsonObject`インターフェースが提供する`ToString()`メソッドや`Format(IJsonFormatOptions)`メソッドによって
 JSONの文字列表現を得ることができます。
+`IJsonFormatOptions`は`JsonFormatOptions.Builder()`メソッドが返すビルダーを使用して構築することができます。
