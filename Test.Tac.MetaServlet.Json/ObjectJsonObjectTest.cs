@@ -7,43 +7,46 @@ using System.Linq;
 namespace Test.Tac.MetaServlet.Json
 {
 	[TestFixture()]
-	public class StringJsonObjectTest
+	public class ObjectJsonObjectTest
 	{
 		
 		[Test()]
 		public void ToString_ReturnsStringLiteral()
 		{
 			// Arrange
-			IJsonObject json0 = JsonObject.Of("");
-			IJsonObject json1 = JsonObject.Of("abc");
+			IJsonObject json0 = JsonObject.FromString("{}");
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
 
 			// Act
 			string r0 = json0.ToString();
 			string r1 = json1.ToString();
 
 			// Assert
-			Assert.That(r0, Is.EqualTo("\"\""));
-			Assert.That(r1, Is.EqualTo("\"abc\""));
+			Assert.That(r0, Is.EqualTo("{}"));
+			Assert.That(r1, Is.EqualTo("{\"a\":\"abc\",\"b\":123,\"c\":true,\"d\":null,\"e\":[],\"f\":{}}"));
 		}
 
 		[Test()]
-		public void IsObjectExactly_ReturnsFalse()
+		public void IsObjectExactly_ReturnsTrue()
 		{
 			// Arrange
-			IJsonObject json = JsonObject.Of("");
+			IJsonObject json0 = JsonObject.FromString("{}");
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
 
 			// Act
-			var r = json.IsObjectExactly();
+			var r0 = json0.IsObjectExactly();
+			var r1 = json1.IsObjectExactly();
 
 			// Assert
-			Assert.That(r, Is.False);
+			Assert.That(r0, Is.True);
+			Assert.That(r1, Is.True);
 		}
 
 		[Test()]
 		public void IsNull_ReturnsFalse()
 		{
 			// Arrange
-			IJsonObject json = JsonObject.Of("");
+			IJsonObject json = JsonObject.FromString("{}");
 
 			// Act
 			var r = json.IsNull();
@@ -56,7 +59,7 @@ namespace Test.Tac.MetaServlet.Json
 		public void ArrayValue_ThrowsException()
 		{
 			// Arrange
-			IJsonObject json = JsonObject.Of("");
+			IJsonObject json = JsonObject.FromString("{}");
 
 			// Act
 			// Assert
@@ -70,7 +73,7 @@ namespace Test.Tac.MetaServlet.Json
 		public void ArrayValue1_ReturnsFallback()
 		{
 			// Arrange
-			IJsonObject json = JsonObject.Of("");
+			IJsonObject json = JsonObject.FromString("{}");
 
 			// Act
 			// Assert
@@ -78,50 +81,47 @@ namespace Test.Tac.MetaServlet.Json
 		}
 
 		[Test()]
-		public void StringValue_ReturnsValue()
+		public void StringValue_ThrowsException()
 		{
 			// Arrange
-			IJsonObject json0 = JsonObject.Of(string.Empty);
-			IJsonObject json1 = JsonObject.Of("abc");
+			IJsonObject json0 = JsonObject.FromString("{}");
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
 
 			// Act
 			// Assert
-			Assert.That(json0.StringValue(), Is.EqualTo(string.Empty));
-			Assert.That(json1.StringValue(), Is.EqualTo("abc"));
+			Assert.Throws<ApplicationException>(() => json0.StringValue());
+			Assert.Throws<ApplicationException>(() => json1.StringValue());
 		}
 
 		[Test()]
-		public void StringValue1_IgnoresFallbackValues()
+		public void StringValue1_ReturnsFallbackValues()
 		{
 			// Arrange
-			IJsonObject json0 = JsonObject.Of(string.Empty);
-			IJsonObject json1 = JsonObject.Of("abc");
+			IJsonObject json0 = JsonObject.FromString("{}");
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
 
 			// Act
 			// Assert
-			Assert.That(json0.StringValue("foo"), Is.EqualTo(string.Empty));
-			Assert.That(json1.StringValue("bar"), Is.EqualTo("abc"));
+			Assert.That(json0.StringValue("foo"), Is.EqualTo("foo"));
+			Assert.That(json1.StringValue("bar"), Is.EqualTo("bar"));
 		}
 
 		[Test()]
 		public void BooleanValue_ThrowsException()
 		{
 			// Arrange
-			IJsonObject json = JsonObject.Of(string.Empty);
+			IJsonObject json = JsonObject.FromString("{}");
 
 			// Act
 			// Assert
-			Assert.Throws<ApplicationException>(() =>
-			{
-				json.BooleanValue();
-			});
+			Assert.Throws<ApplicationException>(() => json.BooleanValue());
 		}
 
 		[Test()]
 		public void BooleanValue1_ReturnsFallback()
 		{
 			// Arrange
-			IJsonObject json = JsonObject.Of(string.Empty);
+			IJsonObject json = JsonObject.FromString("{}");
 
 			// Act
 			// Assert
@@ -129,47 +129,80 @@ namespace Test.Tac.MetaServlet.Json
 		}
 
 		[Test()]
-		public void Properties_ReturnsEmptyEnumeralbe()
+		public void Properties_ReturnsEnumeralbeOfProperties()
 		{
 			// Arrange
-			IJsonObject json = JsonObject.Of(string.Empty);
+			IJsonObject json0 = JsonObject.FromString("{}");
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
 
 			// Act
 			// Assert
-			Assert.That(json.Properties.Count(), Is.EqualTo(0));
+			Assert.That(json0.Properties.Count(), Is.EqualTo(0));
+			Assert.That(json1.Properties.Count(), Is.EqualTo(6));
 		}
 
 		[Test()]
-		public void HasProperty_ReturnsFalse()
+		public void HasProperty_ReturnsTestResult()
 		{
 			// Arrange
-			IJsonObject json = JsonObject.Of(string.Empty);
+			IJsonObject json0 = JsonObject.FromString("{}");
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
 
 			// Act
 			// Assert
-			Assert.That(json.HasProperty("foo"), Is.False);
+			Assert.That(json0.HasProperty("a"), Is.False);
+			Assert.That(json1.HasProperty("a"), Is.True);
+			Assert.That(json1.HasProperty("b"), Is.True);
+			Assert.That(json1.HasProperty("c"), Is.True);
+			Assert.That(json1.HasProperty("d"), Is.True);
+			Assert.That(json1.HasProperty("e"), Is.True);
+			Assert.That(json1.HasProperty("f"), Is.True);
+			Assert.That(json1.HasProperty("g"), Is.False);
 		}
 
 		[Test()]
-		public void GetProperty_ThrowsException()
+		public void GetProperty_WhenPropertyDoesNotExist_ThrowsException()
 		{
 			// Arrange
-			IJsonObject json = JsonObject.Of(string.Empty);
+			IJsonObject json0 = JsonObject.FromString("{}");
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
 
 			// Act
 			// Assert
-			Assert.Throws<ApplicationException>(() =>
-			{
-				json.GetProperty("foo");
-			});
+			Assert.Throws<ApplicationException>(() => json0.GetProperty("foo"));
+			Assert.DoesNotThrow(() => json1.GetProperty("a"));
+			Assert.DoesNotThrow(() => json1.GetProperty("b"));
+			Assert.DoesNotThrow(() => json1.GetProperty("c"));
+			Assert.DoesNotThrow(() => json1.GetProperty("d"));
+			Assert.DoesNotThrow(() => json1.GetProperty("e"));
+			Assert.DoesNotThrow(() => json1.GetProperty("f"));
+			Assert.Throws<ApplicationException>(() => json1.GetProperty("g"));
+
+		}
+
+		[Test()]
+		public void GetProperty_WhenPropertyExists_ReturnsTheProperty()
+		{
+			// Arrange
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
+
+			// Act
+			// Assert
+			Assert.That(json1.GetProperty("a").StringValue(), Is.EqualTo("abc"));
+			Assert.That(json1.GetProperty("b").NumberValue(), Is.EqualTo(123));
+			Assert.That(json1.GetProperty("c").BooleanValue(), Is.EqualTo(true));
+			Assert.That(json1.GetProperty("d").IsNull(), Is.True);
+			Assert.That(json1.GetProperty("e").ArrayValue().Count, Is.EqualTo(0));
+			Assert.That(json1.GetProperty("f").IsObjectExactly(), Is.True);
+
 		}
 
 		[Test()]
 		public void NumberValue_ThrowsException()
 		{
 			// Arrange
-			IJsonObject json0 = JsonObject.Of(string.Empty);
-			IJsonObject json1 = JsonObject.Of("abc");
+			IJsonObject json0 = JsonObject.FromString("{}");
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
 
 			// Act
 			// Assert
@@ -181,8 +214,8 @@ namespace Test.Tac.MetaServlet.Json
 		public void NumberValue_ReturnsFallbackValue()
 		{
 			// Arrange
-			IJsonObject json0 = JsonObject.Of(string.Empty);
-			IJsonObject json1 = JsonObject.Of("abc");
+			IJsonObject json0 = JsonObject.FromString("{}");
+			IJsonObject json1 = JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}");
 
 			// Act
 			// Assert
@@ -193,9 +226,14 @@ namespace Test.Tac.MetaServlet.Json
 		[Test()]
 		public void Equals_ComparesBasedOnValueWrappedByJsonObject()
 		{
-			Assert.That(JsonObject.Of("abc").Equals(JsonObject.Of("abc")), Is.True);
-			Assert.That(JsonObject.Of(string.Empty).Equals(JsonObject.Of("")), Is.True);
-			Assert.That(JsonObject.Of("abc").Equals(JsonObject.Of("abcd")), Is.False);
+			Assert.AreEqual(JsonObject.FromString("{}"),
+							JsonObject.FromString("{}"));
+			Assert.AreEqual(JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}"),
+					JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}"));
+			Assert.AreEqual(JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}"),
+					JsonObject.FromString("{a:'abc',c:true,b:123,d:null,e:[],f:{}}"));
+			Assert.AreNotEqual(JsonObject.FromString("{a:'abc',b:123,c:true,d:null,e:[],f:{}}"),
+					JsonObject.FromString("{a:'abc',c:true,d:null,e:[],f:{}}"));
 		}
 	}
 }
