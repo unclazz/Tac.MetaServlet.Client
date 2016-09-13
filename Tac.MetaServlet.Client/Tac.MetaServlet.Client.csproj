@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="sample\sample_getTaskIdByName.json" />
+    <None Include="sample\sample_getTaskStatus.json" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
