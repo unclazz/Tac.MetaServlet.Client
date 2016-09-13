@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.Text;
 using Tac.MetaServlet.Json;
@@ -12,7 +11,7 @@ namespace Tac.MetaServlet.Client
 	/// <summary>
 	/// アプリケーションのメインモジュールです.
 	/// </summary>
-    class MainClass
+	public class MainClass
     {
 		private static readonly int ExitCodeNormal = 0;
 		private static readonly int ExitCodeAbnormal = 1;
@@ -29,7 +28,7 @@ namespace Tac.MetaServlet.Client
             return new MainClass().Execute(args);
         }
 
-        public int Execute(string[] args)
+        public int Execute(params string[] args)
         {
             try
             {
@@ -138,7 +137,7 @@ namespace Tac.MetaServlet.Client
 			// ラベルの幅を計算し（日本語環境を前提としている）
 			// その幅でもって出力の2行目以降インデントするための空白文字シーケンスを準備する
 			var shiftJis = Encoding.GetEncoding("Shift_JIS");
-			var labelWidth = shiftJis.GetByteCount(label);
+			var labelWidth = shiftJis.GetByteCount(label) + 2;
 			var labelColon = new StringBuilder(label).Append(": ");
 			var indent = Enumerable.Range(0, labelWidth)
 					  .Aggregate(new StringBuilder(), (b, s) => b.Append(' '));
