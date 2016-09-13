@@ -16,12 +16,14 @@ TACの提供元からのサポートやTACの仕様変更に対するAPIの追�
 ご覧のとおりRPCリクエストの内容を表すJSON形式ファイルだけは指定が必須です。
 
 ```
-構文: TACRPC /J <json-file> [/H <host>] [/P <port>] [/Q <path>] [/T <timeout>]
-解説: /J  RPCリクエストを表わすJSONが記述されたファイルのパス.
+構文: TACRPC {/J <json-file> | /?} [/H <host>] [/P <port>] [/Q <path>] [/T <timeout>] [/D]
+      /J  RPCリクエストを表わすJSONが記述されたファイルのパス.
       /H  RPCリクエスト先のホスト名. デフォルトは"localhost".
       /P  RPCリクエスト先のポート名. デフォルトは8080.
       /Q  RPCリクエスト先のパス名. デフォルトは"/org.talend.administrator/metaServlet".
       /T  RPCリクエストのタイムアウト時間. 単位はミリ秒. デフォルトは100000.
+      /D  リクエストとレスポンスのダンプ出力を行う.
+      /?  このヘルプを表示する.
 ```
 
 パラメータはコマンドライン引数だけでなく、アプリケーション構成ファイルでも指定することが出来ます。
