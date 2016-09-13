@@ -16,12 +16,14 @@ TACの提供元からのサポートやTACの仕様変更に対するAPIの追�
 ご覧のとおりRPCリクエストの内容を表すJSON形式ファイルだけは指定が必須です。
 
 ```
-構文: TACRPC /J <json-file> [/H <host>] [/P <port>] [/Q <path>] [/T <timeout>]
-解説: /J  RPCリクエストを表わすJSONが記述されたファイルのパス.
+構文: TACRPC {/J <json-file> | /?} [/H <host>] [/P <port>] [/Q <path>] [/T <timeout>] [/D]
+      /J  RPCリクエストを表わすJSONが記述されたファイルのパス.
       /H  RPCリクエスト先のホスト名. デフォルトは"localhost".
       /P  RPCリクエスト先のポート名. デフォルトは8080.
       /Q  RPCリクエスト先のパス名. デフォルトは"/org.talend.administrator/metaServlet".
       /T  RPCリクエストのタイムアウト時間. 単位はミリ秒. デフォルトは100000.
+      /D  リクエストとレスポンスのダンプ出力を行う.
+      /?  このヘルプを表示する.
 ```
 
 パラメータはコマンドライン引数だけでなく、アプリケーション構成ファイルでも指定することが出来ます。
@@ -32,11 +34,11 @@ TACの提供元からのサポートやTACの仕様変更に対するAPIの追�
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
 	<appSettings>
-        <add key="Request.Json" value="request.json" />
-        <!--add key="Remote.Host" value="localhost" />
-        <add key="Remote.Port" value="8080" />
-        <add key="Remote.Path" value="/org.talend.administrator/metaServlet" />
-        <add key="Request.Timeout" value="100000" /-->
+        <!--add key="Tac.MetaServlet.Client.Request.Json" value="request.json" />
+        <add key="Tac.MetaServlet.Client.Remote.Host" value="localhost" />
+        <add key="Tac.MetaServlet.Client.Remote.Port" value="8080" />
+        <add key="Tac.MetaServlet.Client.Remote.Path" value="/org.talend.administrator/metaServlet" />
+        <add key="Tac.MetaServlet.Client.Request.Timeout" value="100000" / -->
     </appSettings>
 </configuration>
 ```
