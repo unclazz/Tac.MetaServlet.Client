@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
 using Tac.MetaServlet.Client;
 
 namespace Test.Tac.MetaServlet.Client
