@@ -1,12 +1,16 @@
 ﻿using NUnit.Framework;
 using System.Linq;
 using Tac.MetaServlet.Client;
+using System;
 
 namespace Test.Tac.MetaServlet.Client
 {
 	[TestFixture()]
 	public class ParametersTest
 	{
+		private static readonly string SampleJsonPath = "../../../" +
+			"Tac.MetaServlet.Client/sample/sample_getTaskIdByName.json";
+
 		[Test()]
 		public void ctor_InitializedPropertiesByDefaultValues()
 		{
@@ -86,6 +90,79 @@ namespace Test.Tac.MetaServlet.Client
 			Assert.That(ps.RequestTimeout, Is.EqualTo(5678));
 			Assert.That(ps.ShowDump, Is.EqualTo(true));
 			Assert.That(ps.ShowHelp, Is.EqualTo(true));
+		}
+
+		[Test()]
+		public void Validate_WhenJsonFileNotFount_ThrowsException()
+		{
+			// Arrange
+			var ps = new Parameters();
+			var j = ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J"));
+
+			// Act
+			// Assert
+			j.SetterDelegate(null);
+			Assert.Throws<ArgumentException>(ps.Validate);
+			j.SetterDelegate(string.Empty);
+			Assert.Throws<ArgumentException>(ps.Validate);
+			j.SetterDelegate("foo");
+			Assert.Throws<ArgumentException>(ps.Validate);
+			j.SetterDelegate(SampleJsonPath);
+			Assert.DoesNotThrow(ps.Validate);
+		}
+
+		[Test()]
+		public void Validate_WhenHostNameIsEmpty_ThrowsException()
+		{
+			// Arrange
+			var ps = new Parameters();
+			ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J")).SetterDelegate(SampleJsonPath);
+			var m = ps.GetMetaData().First((arg) => arg.OptionName.Equals("/H"));
+
+			// Act
+			// Assert
+			m.SetterDelegate(null);
+			Assert.Throws<ArgumentException>(ps.Validate);
+			m.SetterDelegate(string.Empty);
+			Assert.Throws<ArgumentException>(ps.Validate);
+			m.SetterDelegate("abc");
+			Assert.DoesNotThrow(ps.Validate);
+		}
+
+		[Test()]
+		public void Validate_WhenPortNumberIsLessThan1_ThrowsException()
+		{
+			// Arrange
+			var ps = new Parameters();
+			ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J")).SetterDelegate(SampleJsonPath);
+			var m = ps.GetMetaData().First((arg) => arg.OptionName.Equals("/P"));
+
+			// Act
+			// Assert
+			m.SetterDelegate("-1");
+			Assert.Throws<ArgumentException>(ps.Validate);
+			m.SetterDelegate("0");
+			Assert.Throws<ArgumentException>(ps.Validate);
+			m.SetterDelegate("1");
+			Assert.DoesNotThrow(ps.Validate);
+		}
+
+		[Test()]
+		public void Validate_WhenTimeoutMillisIsLessThan1_ThrowsException()
+		{
+			// Arrange
+			var ps = new Parameters();
+			ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J")).SetterDelegate(SampleJsonPath);
+			var m = ps.GetMetaData().First((arg) => arg.OptionName.Equals("/T"));
+
+			// Act
+			// Assert
+			m.SetterDelegate("-2");
+			Assert.Throws<ArgumentException>(ps.Validate);
+			m.SetterDelegate("-1");
+			Assert.Throws<ArgumentException>(ps.Validate);
+			m.SetterDelegate("0");
+			Assert.DoesNotThrow(ps.Validate);
 		}
 	}
 }

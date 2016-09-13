@@ -87,13 +87,17 @@ namespace Tac.MetaServlet.Client
 		public void Validate()
 		{
 			if (ShowHelp) return;
-			if (RequestJson == null || RequestJson.Length == 0)
+			if (string.IsNullOrEmpty(RequestJson))
 			{
 				throw new ArgumentException("コマンドライン引数 /J の指定が必要です.");
 			}
 			if (!File.Exists(RequestJson))
 			{
 				throw new ArgumentException("コマンドライン引数 /J に指定されたパスは存在しません.");
+			}
+			if (string.IsNullOrEmpty(RemoteHost))
+			{
+				throw new ArgumentException("コマンドライン引数 /H の指定が必要です.");
 			}
 			if (RequestTimeout < 0)
 			{
