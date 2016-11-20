@@ -54,17 +54,3 @@ RPCリクエストのロジックの起点となるのは`Request.Builder()`メ�
 リクエストは内部的には`System.Net.WebRequest`クラスとそのサブクラスにより担われています。
 このデフォルトの動作を変更したい場合には、前述のビルダーの`Agent(Func<IRequest, IResponse>)`メソッドを呼び出して、
 代替となるHTTPリクエストのロジックを登録してください。
-
-## Tac.MetaServlet.Json
-
-このプロジェクトはRPCリクエストのパラメータおよびRPCレスポンスの本文を構成するJSON形式データにアクセスするための
-インターフェースおよびその実装とユーティリティを提供します。
-
-JSON形式データのパースは`JsonObject.FromFile(...)`や`JsonObject.FromString(...)`メソッドなどを通じて行います。
-JSONをプログラム・ロジックにより構築する場合は`JsonObject.Of(...)`ファクトリ・メソッドや
-`JsonObject.Builder()`メソッドを通じて得られるビルダーを使用してください。
-
-ファイルやストリームからパースしたものであれプログラムにより構築したものであれ、
-`IJsonObject`インターフェースが提供する`ToString()`メソッドや`Format(IJsonFormatOptions)`メソッドによって
-JSONの文字列表現を得ることができます。
-`IJsonFormatOptions`は`JsonFormatOptions.Builder()`メソッドが返すビルダーを使用して構築することができます。
