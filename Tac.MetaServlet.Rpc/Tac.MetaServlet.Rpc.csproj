@@ -29,6 +29,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="Unclazz.Commons.Json">
+      <HintPath>..\packages\Unclazz.Commons.Json.1.0.0.1\lib\net45\Unclazz.Commons.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -39,10 +42,7 @@
     <Compile Include="Assertions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tac.MetaServlet.Json\Tac.MetaServlet.Json.csproj">
-      <Project>{C476AB81-957D-4619-B752-CD562BFC9D65}</Project>
-      <Name>Tac.MetaServlet.Json</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

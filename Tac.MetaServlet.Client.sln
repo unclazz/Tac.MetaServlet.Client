@@ -1,10 +1,6 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tac.MetaServlet.Json", "Tac.MetaServlet.Json\Tac.MetaServlet.Json.csproj", "{C476AB81-957D-4619-B752-CD562BFC9D65}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Tac.MetaServlet.Json", "Test.Tac.MetaServlet.Json\Test.Tac.MetaServlet.Json.csproj", "{B60D3E3E-34F5-4775-A100-780B27D5E023}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tac.MetaServlet.Rpc", "Tac.MetaServlet.Rpc\Tac.MetaServlet.Rpc.csproj", "{4193F200-5F63-48BC-B983-8BD5D61673F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Tac.MetaServlet.Rpc", "Test.Tac.MetaServlet.Rpc\Test.Tac.MetaServlet.Rpc.csproj", "{FD9B509F-64A9-4337-BA70-B69737AB9375}"
@@ -25,14 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C476AB81-957D-4619-B752-CD562BFC9D65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C476AB81-957D-4619-B752-CD562BFC9D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C476AB81-957D-4619-B752-CD562BFC9D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C476AB81-957D-4619-B752-CD562BFC9D65}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B60D3E3E-34F5-4775-A100-780B27D5E023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B60D3E3E-34F5-4775-A100-780B27D5E023}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B60D3E3E-34F5-4775-A100-780B27D5E023}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B60D3E3E-34F5-4775-A100-780B27D5E023}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4193F200-5F63-48BC-B983-8BD5D61673F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4193F200-5F63-48BC-B983-8BD5D61673F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4193F200-5F63-48BC-B983-8BD5D61673F3}.Release|Any CPU.ActiveCfg = Release|Any CPU

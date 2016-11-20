@@ -60,6 +60,9 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.3.4.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Unclazz.Commons.Json">
+      <HintPath>..\packages\Unclazz.Commons.Json.1.0.0.1\lib\net45\Unclazz.Commons.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RequestTest.cs" />
@@ -68,10 +71,6 @@
     <ProjectReference Include="..\Tac.MetaServlet.Rpc\Tac.MetaServlet.Rpc.csproj">
       <Project>{4193F200-5F63-48BC-B983-8BD5D61673F3}</Project>
       <Name>Tac.MetaServlet.Rpc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tac.MetaServlet.Json\Tac.MetaServlet.Json.csproj">
-      <Project>{C476AB81-957D-4619-B752-CD562BFC9D65}</Project>
-      <Name>Tac.MetaServlet.Json</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
