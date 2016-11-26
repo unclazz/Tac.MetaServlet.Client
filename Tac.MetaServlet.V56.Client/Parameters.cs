@@ -41,7 +41,7 @@ namespace Tac.MetaServlet.V56.Client
 			/// タスク実行リクエストのタイムアウト秒数です。
 			/// </summary>
 			/// <value>タイムアウト秒数</value>
-			public int Timeout { get; set; } = 30;
+			public int Timeout { get; set; } = 60;
 			/// <summary>
 			/// APIアクセス時の認証に使用されるユーザ名です。
 			/// </summary>
