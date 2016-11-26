@@ -1,4 +1,8 @@
 ﻿using System;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
+
 namespace Tac.MetaServlet.V56.Client
 {
 	/// <summary>
@@ -21,5 +25,23 @@ namespace Tac.MetaServlet.V56.Client
 		/// </summary>
 		/// <value>タスク実行開始日時</value>
 		public DateTime StartedOn { get; set; } = DateTime.Now;
+		/// <summary>
+		/// コンソールとファイルに出力を行うためのロガーです。
+		/// ただし初期状態ではコンソールにのみ出力を行います。
+		/// </summary>
+		/// <value>ロガー</value>
+		public Logger Logger { get; }
+		/// <summary>
+		/// コンストラクタです。
+		/// </summary>
+		public Context()
+		{
+			var conf = new LoggingConfiguration();
+			var console = new ConsoleTarget("console");
+			conf.AddTarget(console);
+			conf.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, console));
+			LogManager.Configuration = conf;
+			Logger = LogManager.GetCurrentClassLogger();
+		}
 	}
 }

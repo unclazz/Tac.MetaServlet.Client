@@ -10,62 +10,53 @@ using Unclazz.Commons.Json;
 
 namespace Tac.MetaServlet.V56.Client
 {
+	/// <summary>
+	/// コマンドのエントリーポイントを提供するクラスです。
+	/// </summary>
 	class MainClass
 	{
 		private static readonly int exitCodeOnEndedNormally = 0;
 		private static readonly int exitCodeOnEndedAbnormally = 1;
-
-		private readonly IJsonFormatOptions formatOptions =
+		private static readonly IJsonFormatOptions formatOptions =
 			JsonFormatOptions.Builder().Indent(true).Build();
-		private Logger log;
 
+		/// <summary>
+		/// エントリーポイントです。
+		/// </summary>
+		/// <param name="args">コマンドライン引数</param>
+		/// <returns>終了コード</returns>
 		public static int Main(string[] args)
 		{
 			return new MainClass().Execute(args);
 		}
-
-		private void ConfigureNLog(Parameters ps)
-		{
-			var now = DateTime.Now;
-			var conf = new LoggingConfiguration();
-			conf.Variables.Add("instanceName", ps.Execution.InstanceName);
-			conf.Variables.Add("executionName", MakeExecutionId());
-			conf.Variables.Add("yyyyMMdd", now.ToString("yyyyMMdd"));
-			conf.Variables.Add("hhmmssfff", now.ToString("hhmmssfff"));
-
-			var file = new FileTarget("file")
-			{
-				FileName = ps.Execution.LogFileName,
-				Encoding = Encoding.UTF8
-			};
-
-			var console = new ConsoleTarget("console");
-
-			conf.AddTarget(file);
-			conf.AddTarget(console);
-			conf.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, file));
-			conf.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, console));
-			LogManager.Configuration = conf;
-			log = LogManager.GetCurrentClassLogger();
-		}
-
+		/// <summary>
+		/// コマンドの主処理を実行します。
+		/// </summary>
+		/// <param name="args">コマンドライン引数</param>
 		public int Execute(string[] args)
 		{
+			// 1. コマンド実行中に使用するオブジェクトの初期化
+
 			// パラメータ・オブジェクトを初期化
 			var ps = new Parameters();
 			// コマンドラインの定義を作成
 			var cl = MakeCommandLine(ps);
+			// 実行コンテキストを初期化
+			var ctx = new Context();
 
 			try
 			{
+				// 2. コマンドライン引数のパースとロガーの再構成
+
 				// コマンドライン引数とアプリケーション構成ファイルからパラメータを読み取り
 				cl.Parse(args);
-				// NLogロガーを構成
-				ConfigureNLog(ps);
-				// 実行コンテキストを初期化
-				var ctx = new Context();
+				// NLogロガーを構成し実行コンテキストに設定
+				ReConfigureNLog(ps);
+
+				// 3. タスク起動前の状態チェック
+
 				// APIリクエスト：タスク名をキーにしてタスクIDを取得
-				var resp0 = RequestGetTaskIdByName(ps);
+				var resp0 = RequestGetTaskIdByName(ps, ctx);
 				// 取得したIDを実行コンテキストに設定
 				ctx.TaskId = (int)resp0.GetProperty("taskId").NumberValue();
 				// APIリクエスト：タスクのステータスを取得
@@ -77,12 +68,18 @@ namespace Tac.MetaServlet.V56.Client
 					throw MakeException(exitCodeOnEndedAbnormally,
 										"Task is already running.");
 				}
+
+				// 4. タスクの起動とその完了の待機
+
 				// APIリクエスト：タスクを非同期モードで起動する
 				var resp2 = RequestRunTask(ps, ctx);
 				// 返された実行リクエストIDを実行コンテキストに設定
 				ctx.ExecRequestId = resp2.GetProperty("execRequestId").StringValue();
 				// APIリクエスト：所定の時間内タスクの完了を
 				var resp3 = RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+
+				// 5. リターンコードのログの処理
+
 				var jobExitCode = (int)resp3.GetProperty("jobExitCode").NumberValue();
 				// APIリクエスト：今回の実行時のログを取得（と同時にクライアント側でもロギング）
 				RequestTaskLog(ps, ctx);
@@ -103,7 +100,7 @@ namespace Tac.MetaServlet.V56.Client
 				// コマンドライン引数が指定されていた場合はエラー内容も表示
 				if (args.Length > 0)
 				{
-					Console.Error.WriteLine(ex);
+					ctx.Logger.Error(ex);
 				}
 				// エラーとともに処理が中断
 				return exitCodeOnEndedAbnormally;
@@ -112,7 +109,7 @@ namespace Tac.MetaServlet.V56.Client
 			{
 				// APIリクエスト時にエラーが発生した場合
 				// 例外オブジェクトの内容をロギング
-				log.Error(ex);
+				ctx.Logger.Error(ex);
 				// エラーとともに処理が中断
 				return ex.ExitCode;
 			}
@@ -120,23 +117,30 @@ namespace Tac.MetaServlet.V56.Client
 			{
 				// それ以外のエラーが発生した場合
 				// 例外オブジェクトの内容をロギング
-				if (log == null)
+				if (ctx.Logger == null)
 				{
 					Console.Error.WriteLine(ex);
 				}
 				else {
-					log.Error(ex);
+					ctx.Logger.Error(ex);
 				}
 				// エラーとともに処理が中断
 				return exitCodeOnEndedAbnormally;
 			}
 		}
-
+		/// <summary>
+		/// コマンドラインの定義情報を生成します。
+		/// 生成された定義情報に基づきユーザが指定したコマンドライン引数がパースされたとき、
+		/// このメソッドの引数として渡されたオブジェクトに読み取られたパラメータが設定されます。
+		/// </summary>
+		/// <returns>コマンドライン定義情報</returns>
+		/// <param name="ps">パラメータ</param>
 		public ICommandLine MakeCommandLine(Parameters ps)
 		{
 			return CommandLine
 				.Builder("tacrpc.exe")
-				.Description("")// TODO
+				.Description("A RPC client command to execute task on " +
+				             "TAC(Talend Administration Center).")
 				.CaseSensitive(false)
 				.AddOption(Option
 						   .Builder("/h")
@@ -256,30 +260,72 @@ namespace Tac.MetaServlet.V56.Client
 				           .SetterDelegate(() => ps.Execution.DryRun = true))
 				.Build();
 		}
-
-		public string MakeExecutionId()
+		/// <summary>
+		/// NLogのロガーを構成し直します。
+		/// </summary>
+		/// <param name="ps">パラメータ</param>
+		public void ReConfigureNLog(Parameters ps)
 		{
-			return new System.Random().Next(65535).ToString("x4");
-		}
+			// 現在日付
+			var now = DateTime.Now;
+			// ランダムな数値を16進数表記文字列化
+			var octed4 = new System.Random().Next(65535).ToString("x4");
 
-		public IJsonObject RequestGetTaskIdByName(Parameters ps)
+			// NLogの構成情報を取得
+			var conf = LogManager.Configuration;
+			// 独自のレイアウト変数を追加
+			conf.Variables.Add("instanceName", ps.Execution.InstanceName);
+			conf.Variables.Add("executionName", octed4);
+			conf.Variables.Add("yyyyMMdd", now.ToString("yyyyMMdd"));
+			conf.Variables.Add("hhmmssfff", now.ToString("hhmmssfff"));
+
+			// 新しいターゲットを初期化
+			var file = new FileTarget("file")
+			{
+				FileName = ps.Execution.LogFileName,
+				Encoding = Encoding.UTF8
+			};
+			// 既存の構成情報に追加
+			conf.AddTarget(file);
+			conf.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, file));
+
+			// 構成情報をリロードさせる
+			LogManager.Configuration = conf;
+		}
+		/// <summary>
+		/// APIリクエスト"getTaskIdByName"を実行します。
+		/// </summary>
+		/// <returns>APIから返却されたJSON</returns>
+		/// <param name="ps">パラメータ</param>
+		/// <param name="ctx">実行コンテキスト</param>
+		public IJsonObject RequestGetTaskIdByName(Parameters ps, Context ctx)
 		{
 			var req = MakeRequest(ps, JsonObject.Builder()
 						.Append("actionName", "getTaskIdByName")
 						.Append("taskName", ps.Request.TaskName)
 						.Build());
-			return SendRequest(ps, req);
+			return SendRequest(ps, ctx, req);
 		}
-
+		/// <summary>
+		/// APIリクエスト"getTaskStatus"を実行します。
+		/// </summary>
+		/// <returns>APIから返却されたJSON</returns>
+		/// <param name="ps">パラメータ</param>
+		/// <param name="ctx">実行コンテキスト</param>
 		public IJsonObject RequestGetTaskStatus(Parameters ps, Context ctx)
 		{
 			var req = MakeRequest(ps, JsonObject.Builder()
 						.Append("actionName", "getTaskStatus")
 			                      .Append("taskId", ctx.TaskId)
 						.Build());
-			return SendRequest(ps, req);
+			return SendRequest(ps, ctx, req);
 		}
-
+		/// <summary>
+		/// APIリクエスト"runTask"を実行します。
+		/// </summary>
+		/// <returns>APIから返却されたJSON</returns>
+		/// <param name="ps">パラメータ</param>
+		/// <param name="ctx">実行コンテキスト</param>
 		public IJsonObject RequestRunTask(Parameters ps, Context ctx)
 		{
 			var req = MakeRequest(ps, JsonObject.Builder()
@@ -287,19 +333,16 @@ namespace Tac.MetaServlet.V56.Client
 			                      .Append("taskId", ctx.TaskId)
 			                      .Append("mode", "asynchronous")
 						.Build());
-			return SendRequest(ps, req);
+			return SendRequest(ps, ctx, req);
 		}
-
-		public IJsonObject RequestGetTaskExecutionStatus(Parameters ps, Context ctx)
-		{
-			var req = MakeRequest(ps, JsonObject.Builder()
-						.Append("actionName", "getTaskExecutionStatus")
-								  .Append("taskId", ctx.TaskId)
-			                      .Append("execRequestId", ctx.ExecRequestId)
-						.Build());
-			return SendRequest(ps, req);
-		}
-
+		/// <summary>
+		/// APIリクエスト"getTaskExecutionStatus"を実行します。
+		/// このメソッドはパラメータ・オブジェクトに格納された設定情報に基づき
+		/// タイムアウトを迎えるまで繰り返しタスクの状態を確認します。
+		/// </summary>
+		/// <returns>APIから返却されたJSON</returns>
+		/// <param name="ps">パラメータ</param>
+		/// <param name="ctx">実行コンテキスト</param>
 		public IJsonObject RequestGetTaskExecutionStatusWithThreadSleep(Parameters ps, Context ctx)
 		{
 			// do...whileループで所定の時間内繰り返しステータス確認
@@ -330,7 +373,38 @@ namespace Tac.MetaServlet.V56.Client
 			throw MakeException(exitCodeOnEndedAbnormally,
 			                    "Execution timed out.");
 		}
-
+		/// <summary>
+		/// APIリクエスト"getTaskExecutionStatus"を実行します。
+		/// </summary>
+		/// <returns>APIから返却されたJSON</returns>
+		/// <param name="ps">パラメータ</param>
+		/// <param name="ctx">実行コンテキスト</param>
+		public IJsonObject RequestGetTaskExecutionStatus(Parameters ps, Context ctx)
+		{
+			var req = MakeRequest(ps, JsonObject.Builder()
+						.Append("actionName", "getTaskExecutionStatus")
+								  .Append("taskId", ctx.TaskId)
+								  .Append("execRequestId", ctx.ExecRequestId)
+						.Build());
+			return SendRequest(ps, ctx, req);
+		}
+		/// <summary>
+		/// コマンド実行の所定の時間内に収まっているかどうかをチェックします。
+		/// </summary>
+		/// <returns>所定時間内の場合は<c>true</c></returns>
+		/// <param name="ps">パラメータ</param>
+		/// <param name="startedOn">開始日時</param>
+		public bool WithinTimeLimit(Parameters ps, DateTime startedOn)
+		{
+			var delta = DateTime.Now.Subtract(startedOn);
+			return delta.TotalSeconds > ps.Execution.Timeout;
+		}
+		/// <summary>
+		/// APIリクエスト"taskLog"を実行します。
+		/// </summary>
+		/// <returns>APIから返却されたJSON</returns>
+		/// <param name="ps">パラメータ</param>
+		/// <param name="ctx">実行コンテキスト</param>
 		public IJsonObject RequestTaskLog(Parameters ps, Context ctx)
 		{
 			var req = MakeRequest(ps, JsonObject.Builder()
@@ -338,27 +412,21 @@ namespace Tac.MetaServlet.V56.Client
 								  .Append("taskId", ctx.TaskId)
 								  .Append("lastExecution", true)
 						.Build());
-			return SendRequest(ps, req);
+			return SendRequest(ps, ctx, req);
 		}
-
-		public bool WithinTimeLimit(Parameters ps, DateTime startedOn)
+		/// <summary>
+		/// APIリクエストを行います。
+		/// このメソッドはAPIから返されたレスポンスの内容をチェックし、
+		/// タスクがエラーとともに終了した場合やAPIリクエストのリターンコードが<c>0</c>でない場合、
+		/// さらにまたAPIリクエストそのものが何らかの理由で失敗した場合には、例外をスローします。
+		/// </summary>
+		/// <returns>APIから返却されたJSON</returns>
+		/// <param name="ps">パラメータ</param>
+		/// <param name="ctx">実行コンテキスト</param>
+		/// <param name="req">APIリクエスト</param>
+		public IJsonObject SendRequest(Parameters ps, Context ctx, IRequest req)
 		{
-			var delta = DateTime.Now.Subtract(startedOn);
-			return delta.TotalSeconds > ps.Execution.Timeout;
-		}
-
-		public string SerializeSecurely(IJsonObject j)
-		{
-			var b = JsonObject.Builder(j);
-			if (j.HasProperty("authPass"))
-			{
-				b.Append("authPass", "*****");
-			}
-			return b.Build().Format(formatOptions);
-		}
-
-		public IJsonObject SendRequest(Parameters ps, IRequest req)
-		{
+			var log = ctx.Logger;
 			try
 			{
 				log.Info("RequestContent = {0}", SerializeSecurely(req.Parameters));
@@ -384,7 +452,27 @@ namespace Tac.MetaServlet.V56.Client
 				throw MakeException(exitCodeOnEndedAbnormally, "API request failed.", ex);
 			}
 		}
-
+		/// <summary>
+		/// JSONデータをシリアライズします。
+		/// ただし認証情報が含まれている場合はそれをマスキングします。
+		/// </summary>
+		/// <returns>シリアライズされたJSONデータ</returns>
+		/// <param name="j">デシリアライズされたJSONデータ</param>
+		public string SerializeSecurely(IJsonObject j)
+		{
+			var b = JsonObject.Builder(j);
+			if (j.HasProperty("authPass"))
+			{
+				b.Append("authPass", "*****");
+			}
+			return b.Build().Format(formatOptions);
+		}
+		/// <summary>
+		/// APIリクエストのためのオブジェクトを生成します。
+		/// </summary>
+		/// <returns>APIリクエスト・オブジェクト</returns>
+		/// <param name="ps">コマンド実行パラメータ</param>
+		/// <param name="reqParams">APIリクエストに付加されるパラメータ</param>
 		public IRequest MakeRequest(Parameters ps, IJsonObject reqParams)
 		{
 			var b = Request.Builder()
@@ -404,7 +492,11 @@ namespace Tac.MetaServlet.V56.Client
 			}
 			return b.Build();
 		}
-
+		/// <summary>
+		/// APIレスポンスに含まれるリターンコードをそれが意味する文字列に変換します。
+		/// </summary>
+		/// <returns>文字列</returns>
+		/// <param name="code">リターンコード</param>
 		public string TranslateReturnCode(int code)
 		{
 			switch (code)
@@ -427,7 +519,13 @@ namespace Tac.MetaServlet.V56.Client
 				default:return "Return code not found in API reference...";
 			}
 		}
-
+		/// <summary>
+		/// 例外オブジェクトを生成します。
+		/// </summary>
+		/// <returns>例外オブジェクト</returns>
+		/// <param name="exitCode">終了コード</param>
+		/// <param name="message">メッセージ</param>
+		/// <param name="cause">原因となった例外</param>
 		public ClientException MakeException(int exitCode, string message, Exception cause)
 		{
 			if (cause == null)
@@ -438,12 +536,21 @@ namespace Tac.MetaServlet.V56.Client
 				return new ClientException(exitCode, message, cause);
 			}
 		}
-
+		/// <summary>
+		/// 例外オブジェクトを生成します。
+		/// </summary>
+		/// <returns>例外オブジェクト</returns>
+		/// <param name="exitCode">終了コード</param>
+		/// <param name="message">メッセージ</param>
 		public ClientException MakeException(int exitCode, string message)
 		{
 			return MakeException(exitCode, message, null);
 		}
-
+		/// <summary>
+		/// DryRunモードでHTTPクライアントのモックとして使用されるメソッドです。
+		/// </summary>
+		/// <returns>APIレスポンス</returns>
+		/// <param name="req">APIリクエスト</param>
 		public IResponse DelegateAgent(IRequest req)
 		{
 			var b = Response
