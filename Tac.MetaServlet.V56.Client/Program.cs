@@ -138,7 +138,7 @@ namespace Tac.MetaServlet.V56.Client
 		public ICommandLine MakeCommandLine(Parameters ps)
 		{
 			return CommandLine
-				.Builder("tacrpc.exe")
+				.Builder("tacrpc.v56.exe")
 				.Description("A RPC client command to execute task on " +
 				             "TAC(Talend Administration Center).")
 				.CaseSensitive(false)

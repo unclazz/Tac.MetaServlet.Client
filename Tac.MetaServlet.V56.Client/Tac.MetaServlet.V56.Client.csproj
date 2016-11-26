@@ -6,7 +6,7 @@
     <ProjectGuid>{DB63E5D3-BC9A-452C-A44A-568CE3D8F062}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Tac.MetaServlet.V56.Client</RootNamespace>
-    <AssemblyName>tacrpc</AssemblyName>
+    <AssemblyName>tacrpc.v56</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ReleaseVersion>1.0.1.0</ReleaseVersion>
   </PropertyGroup>
