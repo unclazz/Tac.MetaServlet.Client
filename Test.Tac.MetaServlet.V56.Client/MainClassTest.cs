@@ -289,6 +289,7 @@ namespace Test.Tac.MetaServlet.V56.Client
 				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
 				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
 				Assert.That(r.Parameters["taskId"].NumberValue(), Is.EqualTo(ctx.TaskId));
+				Assert.That(r.Parameters["mode"].StringValue(), Is.EqualTo("asynchronous"));
 
 				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
 										  (b) => b.Append("execRequestId", "TEST_123"));
@@ -382,6 +383,122 @@ namespace Test.Tac.MetaServlet.V56.Client
 			Assert.Throws<ClientException>(() =>
 			{
 				main.RequestRunTask(ps, ctx);
+			});
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatus"/>のテスト。
+		/// APIリクエストは"taskId"と"execRequestId"のほか必須のパラメータを含んでいます。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatus_SendRequest_ThatIncludesRequitedParameters()
+		{
+			// Arrange
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				Assert.That(r.ActionName, Is.EqualTo("getTaskExecutionStatus"));
+				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
+				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
+				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
+				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
+				Assert.That(r.Parameters["taskId"].NumberValue(), Is.EqualTo(ctx.TaskId));
+				Assert.That(r.Parameters["execRequestId"].StringValue(), Is.EqualTo(ctx.ExecRequestId));
+
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("jobExitCode", 0));
+			};
+
+			// Act
+			// Assert
+			main.RequestGetTaskExecutionStatus(ps, ctx);
+		}
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatus"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0ならjobExitCodeを含んだJSONを返します。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatus_ReturnsJsonIncludesStatus_IfRemoteResponseOKAndReturnCode0()
+		{
+			// Arrange
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("jobExitCode", 0));
+			};
+
+			// Act
+			var resp = main.RequestGetTaskExecutionStatus(ps, ctx);
+
+			// Assert
+			Assert.That(resp.GetProperty("jobExitCode").NumberValue(), Is.EqualTo(0));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatus"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでもreturnCodeが0以外なら例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatus_ThrowsException_IfRemoteResponseOKAndReturnCode1()
+		{
+			// Arrange
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.OK, 1,
+										  (b) => b.Append("jobExitCode", 0));
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() =>
+			{
+				main.RequestGetTaskExecutionStatus(ps, ctx);
+			});
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatus"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOK以外ならreturnCodeが0でも例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatus_ThrowsException_IfRemoteResponseNGAndReturnCode0()
+		{
+			// Arrange
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.BadRequest, 0,
+										  (b) => b.Append("jobExitCode", 0));
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() =>
+			{
+				main.RequestGetTaskExecutionStatus(ps, ctx);
+			});
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatus"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でも"status"が含まれない場合は例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatus_DoesNotThrowException_IfRemoteResponseDoesNotIncludeStatus()
+		{
+			// Arrange
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("jobExitCODE", 0));
+			};
+
+			// Act
+			// Assert
+			Assert.DoesNotThrow(() =>
+			{
+				var resp = main.RequestGetTaskExecutionStatus(ps, ctx);
+				Assert.False(resp.HasProperty("jobExitCode"));
 			});
 		}
 	}
