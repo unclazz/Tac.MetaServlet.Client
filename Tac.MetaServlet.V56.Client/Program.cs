@@ -95,7 +95,7 @@ namespace Tac.MetaServlet.V56.Client
 				// 返された実行リクエストIDを実行コンテキストに設定
 				ctx.ExecRequestId = resp2.GetProperty("execRequestId").StringValue();
 				// APIリクエスト：所定の時間内タスクの完了を
-				var resp3 = RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+				var resp3 = RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
 
 				// 5. リターンコードのログの処理
 
@@ -380,7 +380,7 @@ namespace Tac.MetaServlet.V56.Client
 		/// <returns>APIから返却されたJSON</returns>
 		/// <param name="ps">パラメータ</param>
 		/// <param name="ctx">実行コンテキスト</param>
-		public IJsonObject RequestGetTaskExecutionStatusWithThreadSleep(Parameters ps, Context ctx)
+		public IJsonObject RequestGetTaskExecutionStatusRepeatedly(Parameters ps, Context ctx)
 		{
 			// do...whileループで所定の時間内繰り返しステータス確認
 			do

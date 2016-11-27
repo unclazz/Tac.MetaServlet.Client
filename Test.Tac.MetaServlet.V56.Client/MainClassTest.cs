@@ -594,12 +594,12 @@ namespace Test.Tac.MetaServlet.V56.Client
 		}
 
 		/// <summary>
-		/// <see cref="MainClass.RequestGetTaskExecutionStatusWithThreadSleep"/>のテスト。
+		/// <see cref="MainClass.RequestGetTaskExecutionStatusRepeatedly"/>のテスト。
 		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でjobExitCodeを含んだJSONが返されるまで
 		/// かつまた制限時間を迎えるまで繰り返しリクエストを行います。
 		/// </summary>
 		[Test()]
-		public void RequestGetTaskExecutionStatusWithThreadSleep_TryRepeatedly_WithinTimeLimit()
+		public void RequestGetTaskExecutionStatusRepeatedly_TryRepeatedly_WithinTimeLimit()
 		{
 			// Arrange
 			var count = 0;
@@ -621,7 +621,7 @@ namespace Test.Tac.MetaServlet.V56.Client
 			};
 
 			// Act
-			var resp = main.RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+			var resp = main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
 
 			// Assert
 			Assert.That(resp.GetProperty("jobExitCode").NumberValue(), Is.EqualTo(0));
@@ -629,12 +629,12 @@ namespace Test.Tac.MetaServlet.V56.Client
 		}
 
 		/// <summary>
-		/// <see cref="MainClass.RequestGetTaskExecutionStatusWithThreadSleep"/>のテスト。
+		/// <see cref="MainClass.RequestGetTaskExecutionStatusRepeatedly"/>のテスト。
 		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でjobExitCodeを含んだJSONが返されるまで
 		/// かつまた制限時間を迎えるまで繰り返しリクエストを行います。
 		/// </summary>
 		[Test()]
-		public void RequestGetTaskExecutionStatusWithThreadSleep_TryRepeatedly_WithinTimeLimit_NGCase1()
+		public void RequestGetTaskExecutionStatusRepeatedly_TryRepeatedly_WithinTimeLimit_NGCase1()
 		{
 			// Arrange
 			var count = 0;
@@ -658,18 +658,18 @@ namespace Test.Tac.MetaServlet.V56.Client
 			// Act
 			// Assert
 			Assert.Throws<ClientException>(() => {
-				main.RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+				main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
 			});
 			Assert.That(count, Is.EqualTo(2));
 		}
 
 		/// <summary>
-		/// <see cref="MainClass.RequestGetTaskExecutionStatusWithThreadSleep"/>のテスト。
+		/// <see cref="MainClass.RequestGetTaskExecutionStatusRepeatedly"/>のテスト。
 		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でjobExitCodeを含んだJSONが返されるまで
 		/// かつまた制限時間を迎えるまで繰り返しリクエストを行います。
 		/// </summary>
 		[Test()]
-		public void RequestGetTaskExecutionStatusWithThreadSleep_TryRepeatedly_WithinTimeLimit_NGCase2()
+		public void RequestGetTaskExecutionStatusRepeatedly_TryRepeatedly_WithinTimeLimit_NGCase2()
 		{
 			// Arrange
 			var count = 0;
@@ -694,18 +694,18 @@ namespace Test.Tac.MetaServlet.V56.Client
 			// Assert
 			Assert.Throws<ClientException>(() =>
 			{
-				main.RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+				main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
 			});
 			Assert.That(count, Is.EqualTo(2));
 		}
 
 		/// <summary>
-		/// <see cref="MainClass.RequestGetTaskExecutionStatusWithThreadSleep"/>のテスト。
+		/// <see cref="MainClass.RequestGetTaskExecutionStatusRepeatedly"/>のテスト。
 		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でjobExitCodeを含んだJSONが返されるまで
 		/// かつまた制限時間を迎えるまで繰り返しリクエストを行います。
 		/// </summary>
 		[Test()]
-		public void RequestGetTaskExecutionStatusWithThreadSleep_TryRepeatedly_WithinTimeLimit_NGCase3()
+		public void RequestGetTaskExecutionStatusRepeatedly_TryRepeatedly_WithinTimeLimit_NGCase3()
 		{
 			// Arrange
 			var count = 0;
@@ -730,7 +730,7 @@ namespace Test.Tac.MetaServlet.V56.Client
 			// Assert
 			Assert.Throws<ClientException>(() =>
 			{
-				main.RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+				main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
 			});
 		}
 	}
