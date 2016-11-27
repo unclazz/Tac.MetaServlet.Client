@@ -30,16 +30,23 @@ namespace Tac.MetaServlet.V56.Client
 			return new MainClass().Execute(args);
 		}
 
-		private readonly Func<IRequest, IResponse> mockAgent;
+		private readonly Func<IRequest, IResponse> agent;
 
-		public MainClass(Func<IRequest, IResponse> mockAgent)
+		/// <summary>
+		/// コンストラクタです。
+		/// 引数でデリゲートを指定した場合APIリクエストはそれを通じて行われます。
+		/// このコンストラクタはAPIとの間で行われるやり取りの詳細をカスタマイズしたり、
+		/// 単体テストのためのモックを注入するための手段を提供します。
+		/// </summary>
+		/// <param name="agent">Agent.</param>
+		public MainClass(Func<IRequest, IResponse> agent)
 		{
-			this.mockAgent = mockAgent;
+			this.agent = agent;
 		}
-
-		public MainClass():this(null)
-		{
-		}
+		/// <summary>
+		/// コンストラクタです。
+		/// </summary>
+		public MainClass() : this(null) { }
 
 		/// <summary>
 		/// コマンドの主処理を実行します。
@@ -500,9 +507,9 @@ namespace Tac.MetaServlet.V56.Client
 						   .AuthUser(ps.Request.AuthUser)
 						   .AuthPass(ps.Request.AuthPass)
 						   .Timeout(ps.Request.Timeout);
-			if (mockAgent != null)
+			if (agent != null)
 			{
-				b.Agent(mockAgent);
+				b.Agent(agent);
 			}
 			else if (ps.Execution.DryRun)
 			{
