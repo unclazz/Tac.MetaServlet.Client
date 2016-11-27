@@ -106,10 +106,30 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
+			Assert.That(() => { main.RequestGetTaskIdByName(ps, ctx); }, 
+			            Throws.TypeOf<ClientException>()
+			            .With.Property("ExitCode").EqualTo(1));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskIdByName"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでもreturnCodeが0以外なら例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskIdByName_ThrowsException_IfRemoteResponseOKAndReturnCode2()
+		{
+			// Arrange
+			agent.ResponseGetTaskIdByName = (r) =>
 			{
-				main.RequestGetTaskIdByName(ps, ctx);
-			});
+				return agent.MakeResponse(r, HttpStatusCode.OK, 2,
+										  (b) => b.Append("taskId", 123));
+			};
+
+			// Act
+			// Assert
+			Assert.That(() => { main.RequestGetTaskIdByName(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(2));
 		}
 
 		/// <summary>
@@ -128,10 +148,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestGetTaskIdByName(ps, ctx);
-			});
+			Assert.That(() => { main.RequestGetTaskIdByName(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 		}
 
 		/// <summary>
@@ -150,10 +169,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestGetTaskIdByName(ps, ctx);
-			});
+			Assert.That(() => { main.RequestGetTaskIdByName(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 		}
 
 		/// <summary>
@@ -221,10 +239,30 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
+			Assert.That(() => { main.RequestGetTaskStatus(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskStatus"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでもreturnCodeが0以外なら例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskStatus_ThrowsException_IfRemoteResponseOKAndReturnCode2()
+		{
+			// Arrange
+			agent.ResponseGetTaskStatus = (r) =>
 			{
-				main.RequestGetTaskStatus(ps, ctx);
-			});
+				return agent.MakeResponse(r, HttpStatusCode.OK, 2,
+										  (b) => b.Append("status", "TESTING!"));
+			};
+
+			// Act
+			// Assert
+			Assert.That(() => { main.RequestGetTaskStatus(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(2));
 		}
 
 		/// <summary>
@@ -243,10 +281,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestGetTaskStatus(ps, ctx);
-			});
+			Assert.That(() => { main.RequestGetTaskStatus(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 		}
 
 		/// <summary>
@@ -265,10 +302,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestGetTaskStatus(ps, ctx);
-			});
+			Assert.That(() => { main.RequestGetTaskStatus(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 		}
 
 		/// <summary>
@@ -336,10 +372,30 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
+			Assert.That(() => { main.RequestRunTask(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestRunTask"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでもreturnCodeが0以外なら例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestRunTask_ThrowsException_IfRemoteResponseOKAndReturnCode2()
+		{
+			// Arrange
+			agent.ResponseRunTask = (r) =>
 			{
-				main.RequestRunTask(ps, ctx);
-			});
+				return agent.MakeResponse(r, HttpStatusCode.OK, 2,
+										  (b) => b.Append("execRequestId", "TEST_123"));
+			};
+
+			// Act
+			// Assert
+			Assert.That(() => { main.RequestRunTask(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(2));
 		}
 
 		/// <summary>
@@ -358,10 +414,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestRunTask(ps, ctx);
-			});
+			Assert.That(() => { main.RequestRunTask(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 		}
 
 		/// <summary>
@@ -380,10 +435,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestRunTask(ps, ctx);
-			});
+			Assert.That(() => { main.RequestRunTask(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 		}
 
 		/// <summary>
@@ -451,10 +505,30 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
+			Assert.That(() => { main.RequestGetTaskExecutionStatus(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatus"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでもreturnCodeが0以外なら例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatus_ThrowsException_IfRemoteResponseOKAndReturnCode2()
+		{
+			// Arrange
+			agent.ResponseGetTaskExecutionStatus = (r) =>
 			{
-				main.RequestGetTaskExecutionStatus(ps, ctx);
-			});
+				return agent.MakeResponse(r, HttpStatusCode.OK, 2,
+										  (b) => b.Append("jobExitCode", 0));
+			};
+
+			// Act
+			// Assert
+			Assert.That(() => { main.RequestGetTaskExecutionStatus(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(2));
 		}
 
 		/// <summary>
@@ -473,10 +547,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestGetTaskExecutionStatus(ps, ctx);
-			});
+			Assert.That(() => { main.RequestGetTaskExecutionStatus(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 		}
 
 		/// <summary>
@@ -565,10 +638,30 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
+			Assert.That(() => { main.RequestTaskLog(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestTaskLog"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでもreturnCodeが0以外なら例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestTaskLog_ThrowsException_IfRemoteResponseOKAndReturnCode2()
+		{
+			// Arrange
+			agent.ResponseTaskLog = (r) =>
 			{
-				main.RequestTaskLog(ps, ctx);
-			});
+				return agent.MakeResponse(r, HttpStatusCode.OK, 2,
+										  (b) => b.Append("foo", "bar"));
+			};
+
+			// Act
+			// Assert
+			Assert.That(() => { main.RequestTaskLog(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(2));
 		}
 
 		/// <summary>
@@ -587,10 +680,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestTaskLog(ps, ctx);
-			});
+			Assert.That(() => { main.RequestTaskLog(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 		}
 
 		/// <summary>
@@ -657,9 +749,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() => {
-				main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
-			});
+			Assert.That(() => { main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 			Assert.That(count, Is.EqualTo(2));
 		}
 
@@ -692,10 +784,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
-			});
+			Assert.That(() => { main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 			Assert.That(count, Is.EqualTo(2));
 		}
 
@@ -706,6 +797,41 @@ namespace Test.Tac.MetaServlet.V56.Client
 		/// </summary>
 		[Test()]
 		public void RequestGetTaskExecutionStatusRepeatedly_TryRepeatedly_WithinTimeLimit_NGCase3()
+		{
+			// Arrange
+			var count = 0;
+			ctx.StartedOn = DateTime.Now;
+			ps.Execution.Timeout = 60;
+			ps.Request.Interval = 1;
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				if (count < 2)
+				{
+					count++;
+					return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+											  (b) => b.Append("jobExitCODE", 0));
+				}
+				else {
+					return agent.MakeResponse(r, HttpStatusCode.OK, 2,
+											  (b) => b.Append("jobExitCode", 0));
+				}
+			};
+
+			// Act
+			// Assert
+			Assert.That(() => { main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(2));
+			Assert.That(count, Is.EqualTo(2));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatusRepeatedly"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でjobExitCodeを含んだJSONが返されるまで
+		/// かつまた制限時間を迎えるまで繰り返しリクエストを行います。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatusRepeatedly_TryRepeatedly_WithinTimeLimit_NGCase4()
 		{
 			// Arrange
 			var count = 0;
@@ -728,10 +854,9 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 			// Act
 			// Assert
-			Assert.Throws<ClientException>(() =>
-			{
-				main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
-			});
+			Assert.That(() => { main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx); },
+						Throws.TypeOf<ClientException>()
+						.With.Property("ExitCode").EqualTo(1));
 		}
 	}
 }

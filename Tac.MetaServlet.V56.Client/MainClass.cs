@@ -136,7 +136,7 @@ namespace Tac.MetaServlet.V56.Client
 			{
 				// それ以外のエラーが発生した場合
 				// 例外オブジェクトの内容をロギング
-				if (ctx.Logger == null)
+				if (ctx == null && ctx.Logger == null)
 				{
 					Console.Error.WriteLine(ex);
 				}
@@ -480,9 +480,13 @@ namespace Tac.MetaServlet.V56.Client
 				else {
 					log.Error("HttpStatus = {0}", resp.StatusCode);
 					log.Error("ReturnCode = {0}", TranslateReturnCode(resp.ReturnCode));
-					log.Error("ResponseBody = {0}",  SerializeSecurely(resp.Body));
+					log.Error("ResponseBody = {0}", SerializeSecurely(resp.Body));
 					throw MakeException(exitCode, "Bad API response.");
 				}
+			}
+			catch (ClientException ex)
+			{
+				throw;
 			}
 			catch (Exception ex)
 			{
