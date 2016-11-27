@@ -343,7 +343,13 @@ namespace Tac.MetaServlet.V56.Client
 						.Append("actionName", "getTaskStatus")
 			                      .Append("taskId", ctx.TaskId)
 						.Build());
-			return SendRequest(ps, ctx, req);
+			var resp = SendRequest(ps, ctx, req);
+			if (resp.HasProperty("status"))
+			{
+				return resp;
+			}
+			throw MakeException("Unexpected result of API calling. " +
+								"\"getTaskStatus\" does not return \"status\".");
 		}
 		/// <summary>
 		/// APIリクエスト"runTask"を実行します。
