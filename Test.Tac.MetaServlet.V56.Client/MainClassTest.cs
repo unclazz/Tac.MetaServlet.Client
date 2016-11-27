@@ -43,6 +43,34 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 		/// <summary>
 		/// <see cref="MainClass.RequestGetTaskIdByName"/>のテスト。
+		/// APIリクエストは"taskName"のほか必須のパラメータを含んでいます。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskIdByName_SendRequest_ThatIncludesRequitedParameters()
+		{
+			// Arrange
+			agent.ResponseGetTaskIdByName = (r) =>
+			{
+				Assert.That(r.ActionName, Is.EqualTo("getTaskIdByName"));
+				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
+				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
+				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
+				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
+				Assert.That(r.Parameters["taskName"].StringValue(), Is.EqualTo(ps.Request.TaskName));
+
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("taskId", 123));
+			};
+
+			// Act
+			// Assert
+			main.RequestGetTaskIdByName(ps, ctx);
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskIdByName"/>のテスト。
 		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0ならtaskIdを含んだJSONを返します。
 		/// </summary>
 		[Test()]
@@ -130,6 +158,34 @@ namespace Test.Tac.MetaServlet.V56.Client
 
 		/// <summary>
 		/// <see cref="MainClass.RequestGetTaskStatus"/>のテスト。
+		/// APIリクエストは"taskId"のほか必須のパラメータを含んでいます。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskStatus_SendRequest_ThatIncludesRequitedParameters()
+		{
+			// Arrange
+			agent.ResponseGetTaskStatus = (r) =>
+			{
+				Assert.That(r.ActionName, Is.EqualTo("getTaskStatus"));
+				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
+				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
+				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
+				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
+				Assert.That(r.Parameters["taskId"].NumberValue(), Is.EqualTo(ctx.TaskId));
+
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("status", "TESTING!"));
+			};
+
+			// Act
+			// Assert
+			main.RequestGetTaskStatus(ps, ctx);
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskStatus"/>のテスト。
 		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0ならstatusを含んだJSONを返します。
 		/// </summary>
 		[Test()]
@@ -212,6 +268,120 @@ namespace Test.Tac.MetaServlet.V56.Client
 			Assert.Throws<ClientException>(() =>
 			{
 				main.RequestGetTaskStatus(ps, ctx);
+			});
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestRunTask"/>のテスト。
+		/// APIリクエストは"taskId"のほか必須のパラメータを含んでいます。
+		/// </summary>
+		[Test()]
+		public void RequestRunTask_SendRequest_ThatIncludesRequitedParameters()
+		{
+			// Arrange
+			agent.ResponseRunTask = (r) =>
+			{
+				Assert.That(r.ActionName, Is.EqualTo("runTask"));
+				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
+				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
+				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
+				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
+				Assert.That(r.Parameters["taskId"].NumberValue(), Is.EqualTo(ctx.TaskId));
+
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("execRequestId", "TEST_123"));
+			};
+
+			// Act
+			// Assert
+			main.RequestRunTask(ps, ctx);
+		}
+		/// <summary>
+		/// <see cref="MainClass.RequestRunTask"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0ならexecRequestIdを含んだJSONを返します。
+		/// </summary>
+		[Test()]
+		public void RequestRunTask_ReturnsJsonIncludesStatus_IfRemoteResponseOKAndReturnCode0()
+		{
+			// Arrange
+			agent.ResponseRunTask = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("execRequestId", "TEST_123"));
+			};
+
+			// Act
+			var resp = main.RequestRunTask(ps, ctx);
+
+			// Assert
+			Assert.That(resp.GetProperty("execRequestId").StringValue(), Is.EqualTo("TEST_123"));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestRunTask"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでもreturnCodeが0以外なら例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestRunTask_ThrowsException_IfRemoteResponseOKAndReturnCode1()
+		{
+			// Arrange
+			agent.ResponseRunTask = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.OK, 1,
+										  (b) => b.Append("execRequestId", "TEST_123"));
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() =>
+			{
+				main.RequestRunTask(ps, ctx);
+			});
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestRunTask"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOK以外ならreturnCodeが0でも例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestRunTask_ThrowsException_IfRemoteResponseNGAndReturnCode0()
+		{
+			// Arrange
+			agent.ResponseRunTask = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.BadRequest, 0,
+										  (b) => b.Append("execRequestId", "TEST_123"));
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() =>
+			{
+				main.RequestRunTask(ps, ctx);
+			});
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestRunTask"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でも"status"が含まれない場合は例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestRunTasks_ThrowsException_IfRemoteResponseDoesNotIncludeStatus()
+		{
+			// Arrange
+			agent.ResponseRunTask = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("execRequestID", "TEST_123"));
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() =>
+			{
+				main.RequestRunTask(ps, ctx);
 			});
 		}
 	}
