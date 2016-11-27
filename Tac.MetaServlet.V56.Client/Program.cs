@@ -13,7 +13,7 @@ namespace Tac.MetaServlet.V56.Client
 	/// <summary>
 	/// コマンドのエントリーポイントを提供するクラスです。
 	/// </summary>
-	class MainClass
+	public class MainClass
 	{
 		private static readonly int exitCodeOnEndedNormally = 0;
 		private static readonly int exitCodeOnEndedAbnormally = 1;
@@ -29,6 +29,18 @@ namespace Tac.MetaServlet.V56.Client
 		{
 			return new MainClass().Execute(args);
 		}
+
+		private readonly Func<IRequest, IResponse> mockAgent;
+
+		public MainClass(Func<IRequest, IResponse> mockAgent)
+		{
+			this.mockAgent = mockAgent;
+		}
+
+		public MainClass():this(null)
+		{
+		}
+
 		/// <summary>
 		/// コマンドの主処理を実行します。
 		/// </summary>
@@ -269,7 +281,7 @@ namespace Tac.MetaServlet.V56.Client
 			// 現在日付
 			var now = DateTime.Now;
 			// ランダムな数値を16進数表記文字列化
-			var octed4 = new System.Random().Next(65535).ToString("x4");
+			var octed4 = new Random().Next(65535).ToString("x4");
 
 			// NLogの構成情報を取得
 			var conf = LogManager.Configuration;
@@ -304,7 +316,13 @@ namespace Tac.MetaServlet.V56.Client
 						.Append("actionName", "getTaskIdByName")
 						.Append("taskName", ps.Request.TaskName)
 						.Build());
-			return SendRequest(ps, ctx, req);
+			var resp = SendRequest(ps, ctx, req);
+			if (resp.HasProperty("taskId"))
+			{
+				return resp;
+			}
+			throw MakeException("Unexpected result of API calling. " +
+			                    "\"getTaskIdByName\" does not return \"taskId\".");
 		}
 		/// <summary>
 		/// APIリクエスト"getTaskStatus"を実行します。
@@ -482,7 +500,11 @@ namespace Tac.MetaServlet.V56.Client
 						   .AuthUser(ps.Request.AuthUser)
 						   .AuthPass(ps.Request.AuthPass)
 						   .Timeout(ps.Request.Timeout);
-			if (ps.Execution.DryRun)
+			if (mockAgent != null)
+			{
+				b.Agent(mockAgent);
+			}
+			else if (ps.Execution.DryRun)
 			{
 				b.Agent(DelegateAgent);
 			}
@@ -545,6 +567,15 @@ namespace Tac.MetaServlet.V56.Client
 		public ClientException MakeException(int exitCode, string message)
 		{
 			return MakeException(exitCode, message, null);
+		}
+		/// <summary>
+		/// 例外オブジェクトを生成します。
+		/// </summary>
+		/// <returns>例外オブジェクト</returns>
+		/// <param name="message">メッセージ</param>
+		public ClientException MakeException(string message)
+		{
+			return MakeException(exitCodeOnEndedAbnormally, message, null);
 		}
 		/// <summary>
 		/// DryRunモードでHTTPクライアントのモックとして使用されるメソッドです。
