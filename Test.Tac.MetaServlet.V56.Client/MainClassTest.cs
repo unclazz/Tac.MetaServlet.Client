@@ -501,5 +501,96 @@ namespace Test.Tac.MetaServlet.V56.Client
 				Assert.False(resp.HasProperty("jobExitCode"));
 			});
 		}
+		/// <summary>
+		/// <see cref="MainClass.RequestTaskLog"/>のテスト。
+		/// APIリクエストは"taskId"と"lastExecution"のほか必須のパラメータを含んでいます。
+		/// </summary>
+		[Test()]
+		public void RequestTaskLog_SendRequest_ThatIncludesRequitedParameters()
+		{
+			// Arrange
+			agent.ResponseTaskLog = (r) =>
+			{
+				Assert.That(r.ActionName, Is.EqualTo("taskLog"));
+				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
+				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
+				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
+				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
+				Assert.That(r.Parameters["taskId"].NumberValue(), Is.EqualTo(ctx.TaskId));
+				Assert.That(r.Parameters["lastExecution"].BooleanValue(), Is.True);
+
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("foo", "bar"));
+			};
+
+			// Act
+			// Assert
+			main.RequestTaskLog(ps, ctx);
+		}
+		/// <summary>
+		/// <see cref="MainClass.RequestTaskLog"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0ならjobExitCodeを含んだJSONを返します。
+		/// </summary>
+		[Test()]
+		public void RequestTaskLog_ReturnsJsonIncludesStatus_IfRemoteResponseOKAndReturnCode0()
+		{
+			// Arrange
+			agent.ResponseTaskLog = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+										  (b) => b.Append("foo", "bar"));
+			};
+
+			// Act
+			// Assert
+			var resp = main.RequestTaskLog(ps, ctx);
+			Assert.That(resp.GetProperty("returnCode").NumberValue(), Is.EqualTo(0));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestTaskLog"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでもreturnCodeが0以外なら例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestTaskLog_ThrowsException_IfRemoteResponseOKAndReturnCode1()
+		{
+			// Arrange
+			agent.ResponseTaskLog = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.OK, 1,
+										  (b) => b.Append("foo", "bar"));
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() =>
+			{
+				main.RequestTaskLog(ps, ctx);
+			});
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestTaskLog"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOK以外ならreturnCodeが0でも例外をスローします。
+		/// </summary>
+		[Test()]
+		public void RequestTaskLog_ThrowsException_IfRemoteResponseNGAndReturnCode0()
+		{
+			// Arrange
+			agent.ResponseTaskLog = (r) =>
+			{
+				return agent.MakeResponse(r, HttpStatusCode.BadRequest, 0,
+										  (b) => b.Append("foo", "bar"));
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() =>
+			{
+				main.RequestTaskLog(ps, ctx);
+			});
+		}
 	}
 }
