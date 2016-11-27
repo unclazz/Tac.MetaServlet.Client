@@ -10,9 +10,40 @@
 
 このプロジェクトはRPCリクエストの生成とレスポンスの解析のために直接的に必要になるインターフェースおよびその実装とユーティリティを提供します。
 
-RPCリクエストのロジックの起点となるのは`Request.Builder()`メソッドが返すビルダーです。このビルダーを通じてリクエストに必要なメタ情報とリクエストの内容を指定して`IRequest`インターフェースのインスタンスを構築できます。
+### IRequet (Tac.MetaServlet.Rpc.IRequest)
 
-リクエストは内部的には`System.Net.WebRequest`クラスとそのサブクラスにより担われています。このデフォルトの動作を変更したい場合には、前述のビルダーの`Agent(Func<IRequest, IResponse>)`メソッドを呼び出して、代替となるHTTPリクエストのロジックを登録してください。
+RPCリクエストを表わすインターフェースです。インターフェースを実装した具象クラスは`Request`で、`Request.Builder()`メソッドを通じて得られるビルダーを使用して構築することができます。リクエストとレスポンスの内容はJSON形式のデータで表されます。JSON形式データをC#オブジェクトとして扱うために[Unclazz.Commons.Json](https://github.com/unclazz/Unclazz.Commons.Json)アセンブリから提供されている`IJsonObject`や`JsonObjectBuilder`を用いています。
+
+|メンバー|型|説明|
+|---|---|---|
+|Host|string|リクエスト先のホスト名|
+|Port|int|リクエスト先のポート番号|
+|Path|string|リクエスト先のコンテキストパス|
+|Uri|System.Uri|エンコード済みのリクエスト内容を含むリクエストURI|
+|Timeout|int|リクエストがタイムアウトするまでのミリ秒|
+|ActionName|string|RPCリクエストするアクション名|
+|AuthUser|string|RPCリクエストする認証ユーザ名|
+|AuthPass|string|RPCリクエストする認証パスワード|
+|Parameters|Unclazz.Commons.Json.IJsonObject|PRCリクエストのパラメータを表わすJSON|
+|Send()|IResponse|RPCリクエストを送信する|
+|SendAsync()|Task&lt;IResponse&gt;|RPCリクエストを非同期に送信する|
+
+### IResponse (Tac.MetaServlet.Rpc.IResponse)
+
+RPCレスポンスを表わすインターフェースです。インスタンスは`IRequest.Send()`や`IRequest.SendAsync()`を通じて得られます。インターフェースを実装した具象クラスは`Response`で、`Response.Builder()`メソッドを通じて得られるビルダーを使用して構築することもできます。
+
+|メンバー|型|説明|
+|---|---|---|
+|Request|IRequest|このレスポンスが生成される元になったリクエスト|
+|StatusCode|System.Net.HttpStatusCode|HTTPステータスコード|
+|ReturnCode|int|RPCレスポンスのリターンコード|
+|Body|Unclazz.Commons.Json.IJsonObject|RPCレスポンスの本文として返されたJSON|
+
+### RequrstBuilder (Tac.MetaServlet.Rpc.RequrstBuilder)
+
+RPCリクエストのロジックの起点となるオブジェクトです。このビルダーを通じてリクエストに必要なメタ情報とリクエストの内容を指定して`IRequest`インターフェースのインスタンスを構築できます。
+
+リクエストのHTTP通信部分は内部的には`System.Net.WebRequest`クラスとそのサブクラスにより担われています。このデフォルトの動作を変更したい場合には、前述のビルダーの`Agent(Func<IRequest, IResponse>)`メソッドを呼び出して、代替となるHTTPリクエストのロジックを登録してください。
 
 ## Tac.MetaServlet.Client
 
