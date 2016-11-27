@@ -136,16 +136,17 @@ Options:
 
 `tacrpc.v56.exe`はおおよそ以下の順序で`runTask`リクエストを行います：
 
-1. `getTaskIdByName`リクエストを行い`taskId`を解決する
-2. `getTaskStatus`リクエストを行い`status: "READY_TO_RUN"`であることを確認する
-3. `runTask`リクエストを`mode: "asynchronous"`指定で行う
-4. `getTaskExecutionStatus`リクエストを一定間隔ごとに行い`jobExitCode`が返されるまでポーリングする
-5. `taskLog`リクエストを行い直近のタスク実行時のログをダウンロードする
+1. `getTaskIdByName`リクエストを行い`taskId`を解決する。解決できない場合は処理を中断する。
+2. `getTaskStatus`リクエストを行い`status: "READY_TO_RUN"`であることを確認する。`status`が異なるときは処理を中断する。
+3. `runTask`リクエストを`mode: "asynchronous"`指定で行う。
+4. `getTaskExecutionStatus`リクエストを一定間隔ごとに行い`jobExitCode`が返されるまでポーリングする。制限時間を超過した場合は処理を中断する。
+5. `taskLog`リクエストを行い直近のタスク実行時のログをダウンロードする。
 
 `tacrpc.v56.exe`の終了コードは以下のルールで決まります。リストのより下にあるもの（より条件の厳しいもの）が優先されます：
 
-- コマンドライン引数の内容不正やAPIリクエスト時の通信障害などがあった場合`tacrpc.v56.exe`の終了コードは`1`となる
-- APIレスポンスの`IResponse#StatusCode`が`OK`以外の場合`tacrpc.v56.exe`の終了コードは`1`となる
-- APIレスポンスの`IResponse#ReturnCode`が`0`以外の場合`tacrpc.v56.exe`の終了コードもそれと等しい値となる
-- `getTaskStatus`リクエストに対するレスポンスの`status`が`"READY_TO_RUN"`でない場合`tacrpc.v56.exe`の終了コードは`1`となる
-- `runTask`リクエストに対するレスポンスの`jobExitCode`が`0`以外の場合`tacrpc.v56.exe`の終了コードもそれと等しい値となる
+- コマンドライン引数の内容不正やAPIリクエスト時の通信障害などがあった場合、終了コードは`1`となる。
+- APIレスポンスの`IResponse#StatusCode`が`OK`以外の場合、終了コードは`1`となる。
+- APIレスポンスの`IResponse#ReturnCode`が`0`以外の場合、終了コードもそれと等しい値となる。
+- `getTaskStatus`リクエストに対するレスポンスの`status`が`"READY_TO_RUN"`でない場合、終了コードは`1`となる。
+- `runTask`リクエストに対するレスポンスの`jobExitCode`が`0`以外の場合、終了コードもそれと等しい値となる。
+- 以上のいずれにも該当しないときのみ`0`となる。
