@@ -47,7 +47,7 @@ RPCリクエストのロジックの起点となるオブジェクトです。�
 
 ## Tac.MetaServlet.Client
 
-前述のプロジェクトのアセンブリを参照し、実際にTACに対するRPCを行うサンプル・アプリケーションです。.NET Framework 4.5.2がインストールされた環境にて動作確認を行っています。ビルドにより生成された`*.exe`ファイルをコマンドライン引数なしで実行するとUSAGEが表示されます。ご覧のとおりRPCリクエストの内容を表すJSON形式ファイルだけは指定が必須です。
+前述のプロジェクトのアセンブリを参照し、実際にTACに対するRPCを行うサンプル・アプリケーションです。.NET Framework 4.5.2がインストールされた環境にて動作確認を行っています。ビルドにより生成された`*.exe`ファイルをコマンドライン引数なしで実行するとヘルプが表示されます。ご覧のとおりRPCリクエストの内容を表すJSON形式ファイルだけは指定が必須です。
 
 ```
 構文: TACRPC {/J <json-file> | /?} [/H <host>] [/P <port>] [/Q <path>] [/T <timeout>] [/D]
@@ -74,3 +74,78 @@ RPCリクエストのロジックの起点となるオブジェクトです。�
     </appSettings>
 </configuration>
 ```
+
+### Tac.MetaServlet.V56.Client
+
+TAC v5.6もしくはそれ以上を対象にしたタスク実行（`runTask`リクエスト）専用のコンソール・アプリケーションです。サンプル・アプリケーション`Tac.MetaServlet.Client`同様に、.NET Framework 4.5.2がインストールされた環境にて動作確認を行っています。
+
+ビルドにより生成された`tacrpc.v56.exe`ファイルをコマンドライン引数なしで実行するとヘルプが表示されます：
+
+```
+Syntax:
+                    tacrpc.v56.exe /a <user> /b <password> /n <task> [/dryrun] [
+                    /h <hostname>] [/i <interval>] [/j <instance>] [/l <filename
+                    >] [/p <port>] [/q <path>] [/t <timeout>] [/u <timeout>]
+
+Description:
+                    A RPC client command to execute task on TAC(Talend Administr
+                    ation Center).
+
+Options:
+/a, /authuser       Username for authentication of API access.
+/b, /authpass       Password for authentication of API access.
+/dryrun             Use mock for a simulation. Request is NOT sent for anything.
+                    
+/h                  Hostname of API. Default is "/org.talend.administrator/metaS
+                    ervlet".
+/i                  Interval for executing API request. Specify value by seconds
+                    . Default is 60.
+/j                  Name of command instance. Default is "tacrpc".
+/l                  Name of log file. Default is "tacrpc_${var:instanceName}_${v
+                    ar:executionName}_${var:yyyyMMdd}_${var:hhmmssfff}.log".
+/n                  Task name to execute.
+/p                  Port number of API. Default is 8080.
+/q, /path           Context path of API. Default is "/org.talend.administrator/m
+                    etaServlet".
+/t                  Timeout for executing API request. Specify value by seconds.
+                     Default is 60.
+/u                  Timeout for executing THIS command.Specify value by seconds.
+                     Default is 3600.
+```
+
+バッチ・プログラムとして起動されることを想定しており、たくさんのオプションが用意されています。これらのオプションのほとんどすべてはアプリケーション構成ファイルでも指定できるようになっています：
+
+```app.config
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<appSettings>
+        <add key="Tac.MetaServlet.V56.Client.Remote.Host" value="localhost"/>
+		<add key="Tac.MetaServlet.V56.Client.Remote.Port" value="localhost"/>
+		<add key="Tac.MetaServlet.V56.Client.Remote.Path" value="localhost"/>
+		<add key="Tac.MetaServlet.V56.Client.Request.TaskName" value="localhost"/>
+		<add key="Tac.MetaServlet.V56.Client.Request.Interval" value="60"/>
+		<add key="Tac.MetaServlet.V56.Client.Request.Timeout" value="60"/>
+		<add key="Tac.MetaServlet.V56.Client.Request.AuthUser" value="user@example.com"/>
+		<add key="Tac.MetaServlet.V56.Client.Request.AuthPass" value="password"/>
+		<add key="Tac.MetaServlet.V56.Client.Execution.LogFileName" value="tacrpc_${var:instanceName}_${var:executionName}_${var:yyyyMMdd}_${var:hhmmssfff}.log"/>
+		<add key="Tac.MetaServlet.V56.Client.Execution.InstanceName" value="tacrpc"/>
+		<add key="Tac.MetaServlet.V56.Client.Execution.Timeout" value="3600"/>
+	</appSettings>
+</configuration>
+```
+
+`tacrpc.v56.exe`はおおよそ以下の順序で`runTask`リクエストを行います：
+
+1. `getTaskIdByName`リクエストを行い`taskId`を解決する
+2. `getTaskStatus`リクエストを行い`status: "READY_TO_RUN"`であることを確認する
+3. `runTask`リクエストを`mode: "asynchronous"`指定で行う
+4. `getTaskExecutionStatus`リクエストを一定間隔ごとに行い`jobExitCode`が返されるまでポーリングする
+5. `taskLog`リクエストを行い直近のタスク実行時のログをダウンロードする
+
+`tacrpc.v56.exe`の終了コードは以下のルールで決まります：
+
+- コマンドライン引数の内容不正やAPIリクエスト時の通信障害などがあった場合`tacrpc.v56.exe`の終了コードは`1`となる
+- APIレスポンスの`IResponse#StatusCode`が`OK`以外の場合`tacrpc.v56.exe`の終了コードは`1`となる
+- APIレスポンスの`IResponse#ReturnCode`が`0`以外の場合`tacrpc.v56.exe`の終了コードもそれと等しい値となる
+- `getTaskStatus`リクエストに対するレスポンスの`status`が`"READY_TO_RUN"`でない場合`tacrpc.v56.exe`の終了コードは`1`となる
+- `runTask`リクエストに対するレスポンスの`jobExitCode`が`0`以外の場合`tacrpc.v56.exe`の終了コードもそれと等しい値となる
