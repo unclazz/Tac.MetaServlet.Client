@@ -194,7 +194,7 @@ namespace Tac.MetaServlet.V56.Client
 						   .SetterDelegate(s => ps.Remote.Path = s))
 				.AddOption(Option
 						   .Builder("/n")
-						   .SettingName(SettingKeys.Execution.Timeout)
+				           .SettingName(SettingKeys.Request.TaskName)
 						   .Required()
 						   .HasArgument()
 						   .ArgumentName("task")
@@ -227,7 +227,7 @@ namespace Tac.MetaServlet.V56.Client
 						   .Description(string
 										.Format("Interval for executing API request. " +
 				                                "Specify value by seconds. Default is {0}.",
-												ps.Execution.Timeout))
+				                                ps.Request.Interval))
 				           .SetterDelegate(n => ps.Request.Interval = n))
 				.AddOption(Option
 						   .Builder("/t")
@@ -253,7 +253,7 @@ namespace Tac.MetaServlet.V56.Client
 				           .SetterDelegate(n => ps.Execution.Timeout = n))
 				.AddOption(Option
 						   .Builder("/l")
-						   .SettingName(SettingKeys.Execution.Timeout)
+				           .SettingName(SettingKeys.Execution.LogFileName)
 						   .Required(false)
 						   .HasArgument()
 						   .ArgumentName("filename")
@@ -263,7 +263,7 @@ namespace Tac.MetaServlet.V56.Client
 				           .SetterDelegate(s => ps.Execution.LogFileName = s))
 				.AddOption(Option
 						   .Builder("/j")
-						   .SettingName(SettingKeys.Execution.Timeout)
+				           .SettingName(SettingKeys.Execution.InstanceName)
 						   .Required(false)
 						   .HasArgument()
 						   .ArgumentName("instance")
