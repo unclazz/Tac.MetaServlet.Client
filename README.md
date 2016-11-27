@@ -115,14 +115,14 @@ Options:
 
 バッチ・プログラムとして起動されることを想定しており、たくさんのオプションが用意されています。これらのオプションのほとんどすべてはアプリケーション構成ファイルでも指定できるようになっています：
 
-```app.config
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
 	<appSettings>
         <add key="Tac.MetaServlet.V56.Client.Remote.Host" value="localhost"/>
-		<add key="Tac.MetaServlet.V56.Client.Remote.Port" value="localhost"/>
-		<add key="Tac.MetaServlet.V56.Client.Remote.Path" value="localhost"/>
-		<add key="Tac.MetaServlet.V56.Client.Request.TaskName" value="localhost"/>
+		<add key="Tac.MetaServlet.V56.Client.Remote.Port" value="8080"/>
+		<add key="Tac.MetaServlet.V56.Client.Remote.Path" value="/org.talend.administrator/metaServlet"/>
+		<add key="Tac.MetaServlet.V56.Client.Request.TaskName" value="example_task"/>
 		<add key="Tac.MetaServlet.V56.Client.Request.Interval" value="60"/>
 		<add key="Tac.MetaServlet.V56.Client.Request.Timeout" value="60"/>
 		<add key="Tac.MetaServlet.V56.Client.Request.AuthUser" value="user@example.com"/>
