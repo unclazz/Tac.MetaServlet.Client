@@ -273,10 +273,11 @@ namespace Tac.MetaServlet.V56.Client
 				           .SetterDelegate(s => ps.Execution.InstanceName = s))
 				.AddOption(Option
 						   .Builder("/dryrun")
+				           .SettingName(SettingKeys.Execution.DryRun)
 						   .Required(false)
 						   .HasArgument(false)
 						   .Description("Use mock for a simulation. Request is NOT sent for anything.")
-				           .SetterDelegate(() => ps.Execution.DryRun = true))
+				           .SetterDelegate((bool b) => ps.Execution.DryRun = b))
 				.Build();
 		}
 		/// <summary>

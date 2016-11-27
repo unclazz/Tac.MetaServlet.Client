@@ -70,6 +70,10 @@ namespace Tac.MetaServlet.V56.Client
 			/// コマンド実行タイムアウト秒数
 			/// </summary>
 			public static readonly string Timeout = base_ + nameof(Execution) + _ + nameof(Timeout);
+			/// <summary>
+			/// ドライラン・モードのフラグ
+			/// </summary>
+			public static readonly string DryRun = base_ + nameof(Execution) + _ + nameof(DryRun);
 		}
 	}
 }

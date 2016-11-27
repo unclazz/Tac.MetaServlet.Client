@@ -32,11 +32,11 @@
     <Reference Include="Unclazz.Commons.Json">
       <HintPath>..\packages\Unclazz.Commons.Json.1.0.0.1\lib\net45\Unclazz.Commons.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Unclazz.Commons.CLI">
-      <HintPath>..\packages\Unclazz.Commons.CLI.1.0.0\lib\net45\Unclazz.Commons.CLI.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.3.11\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Unclazz.Commons.CLI">
+      <HintPath>..\packages\Unclazz.Commons.CLI.1.1.0\lib\net45\Unclazz.Commons.CLI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
