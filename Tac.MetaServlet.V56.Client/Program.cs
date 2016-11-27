@@ -434,7 +434,7 @@ namespace Tac.MetaServlet.V56.Client
 		public bool WithinTimeLimit(Parameters ps, DateTime startedOn)
 		{
 			var delta = DateTime.Now.Subtract(startedOn);
-			return delta.TotalSeconds > ps.Execution.Timeout;
+			return delta.TotalSeconds <= ps.Execution.Timeout;
 		}
 		/// <summary>
 		/// APIリクエスト"taskLog"を実行します。

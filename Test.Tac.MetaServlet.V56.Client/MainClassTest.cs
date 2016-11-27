@@ -592,5 +592,146 @@ namespace Test.Tac.MetaServlet.V56.Client
 				main.RequestTaskLog(ps, ctx);
 			});
 		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatusWithThreadSleep"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でjobExitCodeを含んだJSONが返されるまで
+		/// かつまた制限時間を迎えるまで繰り返しリクエストを行います。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatusWithThreadSleep_TryRepeatedly_WithinTimeLimit()
+		{
+			// Arrange
+			var count = 0;
+			ctx.StartedOn = DateTime.Now;
+			ps.Execution.Timeout = 60;
+			ps.Request.Interval = 1;
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				if (count < 2)
+				{
+					count ++;
+					return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+											  (b) => b.Append("jobExitCODE", 0));
+				}
+				else {
+					return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+											  (b) => b.Append("jobExitCode", 0));
+				}
+			};
+
+			// Act
+			var resp = main.RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+
+			// Assert
+			Assert.That(resp.GetProperty("jobExitCode").NumberValue(), Is.EqualTo(0));
+			Assert.That(count, Is.EqualTo(2));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatusWithThreadSleep"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でjobExitCodeを含んだJSONが返されるまで
+		/// かつまた制限時間を迎えるまで繰り返しリクエストを行います。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatusWithThreadSleep_TryRepeatedly_WithinTimeLimit_NGCase1()
+		{
+			// Arrange
+			var count = 0;
+			ctx.StartedOn = DateTime.Now;
+			ps.Execution.Timeout = 60;
+			ps.Request.Interval = 1;
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				if (count < 2)
+				{
+					count++;
+					return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+											  (b) => b.Append("jobExitCODE", 0));
+				}
+				else {
+					return agent.MakeResponse(r, HttpStatusCode.BadRequest, 0,
+											  (b) => b.Append("jobExitCode", 0));
+				}
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() => {
+				main.RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+			});
+			Assert.That(count, Is.EqualTo(2));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatusWithThreadSleep"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でjobExitCodeを含んだJSONが返されるまで
+		/// かつまた制限時間を迎えるまで繰り返しリクエストを行います。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatusWithThreadSleep_TryRepeatedly_WithinTimeLimit_NGCase2()
+		{
+			// Arrange
+			var count = 0;
+			ctx.StartedOn = DateTime.Now;
+			ps.Execution.Timeout = 60;
+			ps.Request.Interval = 1;
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				if (count < 2)
+				{
+					count++;
+					return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+											  (b) => b.Append("jobExitCODE", 0));
+				}
+				else {
+					return agent.MakeResponse(r, HttpStatusCode.OK, 1,
+											  (b) => b.Append("jobExitCode", 0));
+				}
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() =>
+			{
+				main.RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+			});
+			Assert.That(count, Is.EqualTo(2));
+		}
+
+		/// <summary>
+		/// <see cref="MainClass.RequestGetTaskExecutionStatusWithThreadSleep"/>のテスト。
+		/// APIレスポンスのHTTPステータスがOKでreturnCodeが0でjobExitCodeを含んだJSONが返されるまで
+		/// かつまた制限時間を迎えるまで繰り返しリクエストを行います。
+		/// </summary>
+		[Test()]
+		public void RequestGetTaskExecutionStatusWithThreadSleep_TryRepeatedly_WithinTimeLimit_NGCase3()
+		{
+			// Arrange
+			var count = 0;
+			ctx.StartedOn = DateTime.Now;
+			ps.Execution.Timeout = 2;
+			ps.Request.Interval = 1;
+			agent.ResponseGetTaskExecutionStatus = (r) =>
+			{
+				if (count < 60)
+				{
+					count++;
+					return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+											  (b) => b.Append("jobExitCODE", 0));
+				}
+				else {
+					return agent.MakeResponse(r, HttpStatusCode.OK, 0,
+											  (b) => b.Append("jobExitCode", 0));
+				}
+			};
+
+			// Act
+			// Assert
+			Assert.Throws<ClientException>(() =>
+			{
+				main.RequestGetTaskExecutionStatusWithThreadSleep(ps, ctx);
+			});
+		}
 	}
 }
