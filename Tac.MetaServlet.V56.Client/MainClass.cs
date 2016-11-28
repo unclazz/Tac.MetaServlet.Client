@@ -523,7 +523,7 @@ namespace Tac.MetaServlet.V56.Client
 						   .Path(ps.Remote.Path)
 						   .AuthUser(ps.Request.AuthUser)
 						   .AuthPass(ps.Request.AuthPass)
-						   .Timeout(ps.Request.Timeout);
+						   .Timeout(ps.Request.Timeout * 1000);
 			if (agent != null)
 			{
 				b.Agent(agent);
