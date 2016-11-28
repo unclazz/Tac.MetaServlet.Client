@@ -4,9 +4,13 @@
 
 ソリューションとその成果物はMITライセンスのもとで公開しています。これらはいずれもリポジトリのコミッターが個人的に製造しているものですので、TACの提供元からのサポートやTACの仕様変更に対するAPIの追随の保証は一切ありません。
 
-ソリューションにはクラス・ライブラリ`Tac.MetaServlet.Rpc`とそれを使用したサンプル・アプリ`Tac.MetaServlet.Client`の2つのプロジェクトが含まれています。前者のプロジェクトをビルドして作成したアセンブリは[NuGet Gallery](https://www.nuget.org/packages/Tac.MetaServlet.Rpc/)で公開されています。
+ソリューションにはクラス・ライブラリ`Tac.MetaServlet.Rpc`とそれを使用したサンプル・アプリ`Tac.MetaServlet.Client`、そしてプロダクション・フェーズでの利用を想定してつくられたランチャー・アプリ`Tac.MetaServlet.V56.Client`の3つのプロジェクトが含まれています。前者のプロジェクトをビルドして作成したアセンブリは[NuGet Gallery](https://www.nuget.org/packages/Tac.MetaServlet.Rpc/)で公開されています。
 
-## Tac.MetaServlet.Rpc
+1. `Tac.MetaServlet.Rpc`　- RPCリクエストを行うためのAPIを提供するアセンブリ
+2. `Tac.MetaServlet.Client` - サンプル・アプリケーション
+3. `Tac.MetaServlet.V56.Client` - プロダクション・フェーズでの利用を想定したランチャー・アプリ
+
+## 1. Tac.MetaServlet.Rpc
 
 このプロジェクトはRPCリクエストの生成とレスポンスの解析のために直接的に必要になるインターフェースおよびその実装とユーティリティを提供します。
 
@@ -45,7 +49,7 @@ RPCリクエストのロジックの起点となるオブジェクトです。�
 
 リクエストのHTTP通信部分は内部的には`System.Net.WebRequest`クラスとそのサブクラスにより担われています。このデフォルトの動作を変更したい場合には、前述のビルダーの`Agent(Func<IRequest, IResponse>)`メソッドを呼び出して、代替となるHTTPリクエストのロジックを登録してください。
 
-## Tac.MetaServlet.Client
+## 2. Tac.MetaServlet.Client
 
 前述のプロジェクトのアセンブリを参照し、実際にTACに対するRPCを行うサンプル・アプリケーションです。.NET Framework 4.5.2がインストールされた環境にて動作確認を行っています。ビルドにより生成された`*.exe`ファイルをコマンドライン引数なしで実行するとヘルプが表示されます。ご覧のとおりRPCリクエストの内容を表すJSON形式ファイルだけは指定が必須です。
 
@@ -75,7 +79,7 @@ RPCリクエストのロジックの起点となるオブジェクトです。�
 </configuration>
 ```
 
-## Tac.MetaServlet.V56.Client
+## 3. Tac.MetaServlet.V56.Client
 
 TAC v5.6もしくはそれ以上を対象にしたタスク実行専用のコンソール・アプリケーションです。サンプル・アプリケーション`Tac.MetaServlet.Client`同様に、.NET Framework 4.5.2がインストールされた環境にて動作確認を行っています。
 
