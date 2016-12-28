@@ -1,0 +1,11 @@
+language: csharp
+script:
+  - xbuild /p:Configuration=Debug Tac.MetaServlet.Client.sln
+before_install:
+  - sudo apt-get install nunit-console
+before_script:
+  - nuget restore Tac.MetaServlet.Client.sln
+after_script:
+  - nunit-console Test.Tac.MetaServlet.Rpc/bin/Debug/Test.Tac.MetaServlet.Rpc.dll
+  - nunit-console Test.Tac.MetaServlet.Client/bin/Debug/Test.Tac.MetaServlet.Client.dll
+  - nunit-console Test.Tac.MetaServlet.V56.Client/bin/Debug/Test.Tac.MetaServlet.V56.Client.dll
