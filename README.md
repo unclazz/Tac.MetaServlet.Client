@@ -1,5 +1,7 @@
 # Tac.MetaServlet.Client
 
+[![Build Status](https://travis-ci.org/unclazz/Tac.MetaServlet.Client.svg?branch=master)](https://travis-ci.org/unclazz/Tac.MetaServlet.Client)
+
 このVisualStudioソリューションはTalend Administration Center（TAC）のRPCインターフェースであるMetaServletに対して.NET FrameworkやMonoアプリケーションからアクセスすることを可能にするAPIを提供するものです。C#のバージョンは5.0をターゲットとしています。
 
 ソリューションとその成果物はMITライセンスのもとで公開しています。これらはいずれもリポジトリのコミッターが個人的に製造しているものですので、TACの提供元からのサポートやTACの仕様変更に対するAPIの追随の保証は一切ありません。
