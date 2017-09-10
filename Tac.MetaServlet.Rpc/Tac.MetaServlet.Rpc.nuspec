@@ -8,7 +8,7 @@
     <!--owners>$author$</owners-->
     <!--licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl-->
     <projectUrl>https://github.com/unclazz/Tac.MetaServlet.Client</projectUrl>
-    <!--iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl-->
+    <iconUrl>https://avatars0.githubusercontent.com/u/15955371?v=4&s=200</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>RPC client assebmly for Talend Administration Center (TAC)</description><!--description>$description$</description-->
     <!--releaseNotes>Summary of changes made in this release of the package.</releaseNotes-->
