@@ -72,7 +72,7 @@ namespace Test.Tac.MetaServlet.Rpc
 
 			// Assert
 			Assert.That(resp0.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-			Assert.That(resp0.Body.GetProperty("foo").StringValue(), Is.EqualTo("bar"));
+            Assert.That(resp0.Body.GetProperty("foo").AsString(), Is.EqualTo("bar"));
 			Assert.That(resp0.Request, Is.EqualTo(req0));
 		}
 
@@ -93,7 +93,7 @@ namespace Test.Tac.MetaServlet.Rpc
 			// Assert
 			Assert.That(async () => {
 				var r = await req0.SendAsync();
-				return r.Body.GetProperty("foo").StringValue();
+				return r.Body.GetProperty("foo").AsString();
 			}, Is.EqualTo("bar"));
 		}
 

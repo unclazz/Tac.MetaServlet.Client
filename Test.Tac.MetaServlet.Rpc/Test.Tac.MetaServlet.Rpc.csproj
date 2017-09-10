@@ -61,7 +61,7 @@
       <HintPath>..\packages\NUnit.3.4.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="Unclazz.Commons.Json">
-      <HintPath>..\packages\Unclazz.Commons.Json.1.0.0.1\lib\net45\Unclazz.Commons.Json.dll</HintPath>
+      <HintPath>..\packages\Unclazz.Commons.Json.1.2.2\lib\net45\Unclazz.Commons.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

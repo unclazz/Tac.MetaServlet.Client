@@ -35,8 +35,8 @@
     <Reference Include="Unclazz.Commons.CLI">
       <HintPath>..\packages\Unclazz.Commons.CLI.1.1.0\lib\net45\Unclazz.Commons.CLI.dll</HintPath>
     </Reference>
-    <Reference Include="Unclazz.Commons.Json, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unclazz.Commons.Json.1.2.1\lib\net45\Unclazz.Commons.Json.dll</HintPath>
+    <Reference Include="Unclazz.Commons.Json">
+      <HintPath>..\packages\Unclazz.Commons.Json.1.2.2\lib\net45\Unclazz.Commons.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
