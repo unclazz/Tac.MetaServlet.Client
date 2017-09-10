@@ -197,11 +197,35 @@ namespace Tac.MetaServlet.Rpc
 		private string authUserCache;
 		private string authPassCache;
 
+        /// <summary>
+        /// リクエスト先のホストです.
+        /// </summary>
+        /// <value></value>
 		public string Host { get; }
+        /// <summary>
+        /// リクエスト先のポート番号です.
+        /// </summary>
+        /// <value></value>
 		public int Port { get; }
+        /// <summary>
+        /// リクエスト先のパスです.
+        /// </summary>
+        /// <value></value>
 		public string Path { get; }
+        /// <summary>
+        /// リクエストのタイムアウトのミリ秒数です.
+        /// </summary>
+        /// <value>The timeout.</value>
 		public int Timeout { get; }
+        /// <summary>
+        /// リクエストのパラメータを表わすJSONオブジェクトです.
+        /// </summary>
+        /// <value></value>
 		public IJsonObject Parameters { get; }
+        /// <summary>
+        /// リクエストURIです.
+        /// </summary>
+        /// <value></value>
 		public Uri Uri
 		{
 			get
@@ -222,7 +246,10 @@ namespace Tac.MetaServlet.Rpc
 				return uriCache;
 			}
 		}
-
+        /// <summary>
+        /// アクション名です.
+        /// </summary>
+        /// <value></value>
 		public string ActionName
 		{
 			get
@@ -234,7 +261,10 @@ namespace Tac.MetaServlet.Rpc
 				return actionNameCache;
 			}
 		}
-
+        /// <summary>
+        /// 認証ユーザ名です.
+        /// </summary>
+        /// <value></value>
 		public string AuthUser
 		{
 			get
@@ -246,7 +276,10 @@ namespace Tac.MetaServlet.Rpc
 				return authUserCache;
 			}
 		}
-
+        /// <summary>
+        /// 認証パスワードです.
+        /// </summary>
+        /// <value></value>
 		public string AuthPass
 		{
 			get
@@ -279,12 +312,18 @@ namespace Tac.MetaServlet.Rpc
 			Parameters = json;
 			this.agent = agent;
 		}
-
+        /// <summary>
+        /// リクエストを送信します.
+        /// </summary>
+        /// <returns></returns>
 		public IResponse Send()
 		{
 			return agent.Invoke(this);
 		}
-
+        /// <summary>
+        /// リクエストを非同期に送信します.
+        /// </summary>
+        /// <returns></returns>
 		public async Task<IResponse> SendAsync()
 		{
 			return await Task.Run(() => agent.Invoke(this));
