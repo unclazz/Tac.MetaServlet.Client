@@ -30,8 +30,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Unclazz.Commons.Json, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unclazz.Commons.Json.1.2.1\lib\net45\Unclazz.Commons.Json.dll</HintPath>
+    <Reference Include="Unclazz.Commons.Json">
+      <HintPath>..\packages\Unclazz.Commons.Json.1.2.2\lib\net45\Unclazz.Commons.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
