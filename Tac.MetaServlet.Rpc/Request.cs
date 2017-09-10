@@ -229,7 +229,7 @@ namespace Tac.MetaServlet.Rpc
 			{
 				if (actionNameCache == null)
 				{
-					actionNameCache = Parameters.GetProperty("actionName").StringValue();
+					actionNameCache = Parameters.GetProperty("actionName").AsString();
 				}
 				return actionNameCache;
 			}
@@ -241,7 +241,7 @@ namespace Tac.MetaServlet.Rpc
 			{
 				if (authUserCache == null)
 				{
-					authUserCache = Parameters.GetProperty("authUser").StringValue();
+					authUserCache = Parameters.GetProperty("authUser").AsString();
 				}
 				return authUserCache;
 			}
@@ -253,7 +253,7 @@ namespace Tac.MetaServlet.Rpc
 			{
 				if (authPassCache == null)
 				{
-					authPassCache = Parameters.GetProperty("authPass").StringValue();
+					authPassCache = Parameters.GetProperty("authPass").AsString();
 				}
 				return authPassCache;
 			}

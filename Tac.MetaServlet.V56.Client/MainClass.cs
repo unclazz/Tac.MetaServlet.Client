@@ -77,11 +77,11 @@ namespace Tac.MetaServlet.V56.Client
 				// APIリクエスト：タスク名をキーにしてタスクIDを取得
 				var resp0 = RequestGetTaskIdByName(ps, ctx);
 				// 取得したIDを実行コンテキストに設定
-				ctx.TaskId = (int)resp0.GetProperty("taskId").NumberValue();
+				ctx.TaskId = (int)resp0.GetProperty("taskId").AsNumber();
 				// APIリクエスト：タスクのステータスを取得
 				var resp1 = RequestGetTaskStatus(ps, ctx);
 				// ステータスをチェック
-				if (!resp1.GetProperty("status").StringValue().Equals("READY_TO_RUN"))
+				if (!resp1.GetProperty("status").AsString().Equals("READY_TO_RUN"))
 				{
 					// "Ready to run"以外のステータスの場合はエラー
 					throw MakeException(exitCodeOnEndedAbnormally,
@@ -93,13 +93,13 @@ namespace Tac.MetaServlet.V56.Client
 				// APIリクエスト：タスクを非同期モードで起動する
 				var resp2 = RequestRunTask(ps, ctx);
 				// 返された実行リクエストIDを実行コンテキストに設定
-				ctx.ExecRequestId = resp2.GetProperty("execRequestId").StringValue();
+				ctx.ExecRequestId = resp2.GetProperty("execRequestId").AsString();
 				// APIリクエスト：所定の時間内タスクの完了を
 				var resp3 = RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
 
 				// 5. リターンコードのログの処理
 
-				var jobExitCode = (int)resp3.GetProperty("jobExitCode").NumberValue();
+				var jobExitCode = (int)resp3.GetProperty("jobExitCode").AsNumber();
 				// APIリクエスト：今回の実行時のログを取得（と同時にクライアント側でもロギング）
 				RequestTaskLog(ps, ctx);
 				// タスクの終了コードをチェック
@@ -485,7 +485,7 @@ namespace Tac.MetaServlet.V56.Client
 					throw MakeException(exitCode, "Bad API response.");
 				}
 			}
-			catch (ClientException ex)
+			catch (ClientException)
 			{
 				throw;
 			}

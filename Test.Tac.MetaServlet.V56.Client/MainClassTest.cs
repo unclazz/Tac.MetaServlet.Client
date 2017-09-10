@@ -54,11 +54,11 @@ namespace Test.Tac.MetaServlet.V56.Client
 				Assert.That(r.ActionName, Is.EqualTo("getTaskIdByName"));
 				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
 				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
-				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout * 1000));
 				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
 				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
 				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
-				Assert.That(r.Parameters["taskName"].StringValue(), Is.EqualTo(ps.Request.TaskName));
+				Assert.That(r.Parameters["taskName"].AsString(), Is.EqualTo(ps.Request.TaskName));
 
 				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
 										  (b) => b.Append("taskId", 123));
@@ -87,7 +87,7 @@ namespace Test.Tac.MetaServlet.V56.Client
 			var resp = main.RequestGetTaskIdByName(ps, ctx);
 
 			// Assert
-			Assert.That(resp.GetProperty("taskId").NumberValue(), Is.EqualTo(123));
+			Assert.That(resp.GetProperty("taskId").AsNumber(), Is.EqualTo(123));
 		}
 
 		/// <summary>
@@ -187,11 +187,11 @@ namespace Test.Tac.MetaServlet.V56.Client
 				Assert.That(r.ActionName, Is.EqualTo("getTaskStatus"));
 				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
 				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
-				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout * 1000));
 				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
 				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
 				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
-				Assert.That(r.Parameters["taskId"].NumberValue(), Is.EqualTo(ctx.TaskId));
+				Assert.That(r.Parameters["taskId"].AsNumber(), Is.EqualTo(ctx.TaskId));
 
 				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
 										  (b) => b.Append("status", "TESTING!"));
@@ -220,7 +220,7 @@ namespace Test.Tac.MetaServlet.V56.Client
 			var resp = main.RequestGetTaskStatus(ps, ctx);
 
 			// Assert
-			Assert.That(resp.GetProperty("status").StringValue(), Is.EqualTo("TESTING!"));
+			Assert.That(resp.GetProperty("status").AsString(), Is.EqualTo("TESTING!"));
 		}
 
 		/// <summary>
@@ -320,12 +320,12 @@ namespace Test.Tac.MetaServlet.V56.Client
 				Assert.That(r.ActionName, Is.EqualTo("runTask"));
 				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
 				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
-				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout * 1000));
 				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
 				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
 				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
-				Assert.That(r.Parameters["taskId"].NumberValue(), Is.EqualTo(ctx.TaskId));
-				Assert.That(r.Parameters["mode"].StringValue(), Is.EqualTo("asynchronous"));
+				Assert.That(r.Parameters["taskId"].AsNumber(), Is.EqualTo(ctx.TaskId));
+				Assert.That(r.Parameters["mode"].AsString(), Is.EqualTo("asynchronous"));
 
 				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
 										  (b) => b.Append("execRequestId", "TEST_123"));
@@ -353,7 +353,7 @@ namespace Test.Tac.MetaServlet.V56.Client
 			var resp = main.RequestRunTask(ps, ctx);
 
 			// Assert
-			Assert.That(resp.GetProperty("execRequestId").StringValue(), Is.EqualTo("TEST_123"));
+			Assert.That(resp.GetProperty("execRequestId").AsString(), Is.EqualTo("TEST_123"));
 		}
 
 		/// <summary>
@@ -453,12 +453,12 @@ namespace Test.Tac.MetaServlet.V56.Client
 				Assert.That(r.ActionName, Is.EqualTo("getTaskExecutionStatus"));
 				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
 				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
-				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout * 1000));
 				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
 				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
 				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
-				Assert.That(r.Parameters["taskId"].NumberValue(), Is.EqualTo(ctx.TaskId));
-				Assert.That(r.Parameters["execRequestId"].StringValue(), Is.EqualTo(ctx.ExecRequestId));
+				Assert.That(r.Parameters["taskId"].AsNumber(), Is.EqualTo(ctx.TaskId));
+				Assert.That(r.Parameters["execRequestId"].AsString(), Is.EqualTo(ctx.ExecRequestId));
 
 				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
 										  (b) => b.Append("jobExitCode", 0));
@@ -486,7 +486,7 @@ namespace Test.Tac.MetaServlet.V56.Client
 			var resp = main.RequestGetTaskExecutionStatus(ps, ctx);
 
 			// Assert
-			Assert.That(resp.GetProperty("jobExitCode").NumberValue(), Is.EqualTo(0));
+			Assert.That(resp.GetProperty("jobExitCode").AsNumber(), Is.EqualTo(0));
 		}
 
 		/// <summary>
@@ -587,12 +587,12 @@ namespace Test.Tac.MetaServlet.V56.Client
 				Assert.That(r.ActionName, Is.EqualTo("taskLog"));
 				Assert.That(r.AuthUser, Is.EqualTo(ps.Request.AuthUser));
 				Assert.That(r.AuthPass, Is.EqualTo(ps.Request.AuthPass));
-				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout));
+				Assert.That(r.Timeout, Is.EqualTo(ps.Request.Timeout * 1000));
 				Assert.That(r.Host, Is.EqualTo(ps.Remote.Host));
 				Assert.That(r.Port, Is.EqualTo(ps.Remote.Port));
 				Assert.That(r.Path, Is.EqualTo(ps.Remote.Path));
-				Assert.That(r.Parameters["taskId"].NumberValue(), Is.EqualTo(ctx.TaskId));
-				Assert.That(r.Parameters["lastExecution"].BooleanValue(), Is.True);
+				Assert.That(r.Parameters["taskId"].AsNumber(), Is.EqualTo(ctx.TaskId));
+				Assert.That(r.Parameters["lastExecution"].AsBoolean(), Is.True);
 
 				return agent.MakeResponse(r, HttpStatusCode.OK, 0,
 										  (b) => b.Append("foo", "bar"));
@@ -619,7 +619,7 @@ namespace Test.Tac.MetaServlet.V56.Client
 			// Act
 			// Assert
 			var resp = main.RequestTaskLog(ps, ctx);
-			Assert.That(resp.GetProperty("returnCode").NumberValue(), Is.EqualTo(0));
+			Assert.That(resp.GetProperty("returnCode").AsNumber(), Is.EqualTo(0));
 		}
 
 		/// <summary>
@@ -716,7 +716,7 @@ namespace Test.Tac.MetaServlet.V56.Client
 			var resp = main.RequestGetTaskExecutionStatusRepeatedly(ps, ctx);
 
 			// Assert
-			Assert.That(resp.GetProperty("jobExitCode").NumberValue(), Is.EqualTo(0));
+			Assert.That(resp.GetProperty("jobExitCode").AsNumber(), Is.EqualTo(0));
 			Assert.That(count, Is.EqualTo(2));
 		}
 

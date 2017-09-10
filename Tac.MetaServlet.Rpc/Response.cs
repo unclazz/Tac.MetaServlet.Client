@@ -61,7 +61,7 @@ namespace Tac.MetaServlet.Rpc
 		{
 			get
 			{
-				double d = Body.GetProperty("returnCode").NumberValue(-1);
+				double d = Body.GetProperty("returnCode").AsNumber(-1);
 				return (int)d;
 			}
 		}
