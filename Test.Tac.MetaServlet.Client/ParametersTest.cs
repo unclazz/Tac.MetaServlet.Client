@@ -2,14 +2,28 @@
 using System.Linq;
 using Tac.MetaServlet.Client;
 using System;
+using System.Reflection;
+using System.IO;
 
 namespace Test.Tac.MetaServlet.Client
 {
 	[TestFixture()]
 	public class ParametersTest
 	{
-		private static readonly string SampleJsonPath = "../../../" +
-			"Tac.MetaServlet.Client/sample/sample_getTaskIdByName.json";
+        static string GetSolutionDirectoryPath()
+        {
+            var dllFullPath = Path.GetFullPath(Assembly.GetExecutingAssembly().Location);
+            var releaseOfDebug = Path.GetDirectoryName(dllFullPath);
+            var bin = Path.GetDirectoryName(releaseOfDebug);
+            var project = Path.GetDirectoryName(bin);
+            return Path.GetDirectoryName(project);
+        }
+
+        static string GetSampleJsonPath(string filename)
+        {
+            return Path.Combine(GetSolutionDirectoryPath(), 
+                "Tac.MetaServlet.Client", "sample", filename);
+        }
 
 		[Test()]
 		public void ctor_InitializedPropertiesByDefaultValues()
@@ -107,7 +121,7 @@ namespace Test.Tac.MetaServlet.Client
 			Assert.Throws<ArgumentException>(ps.Validate);
 			j.SetterDelegate("foo");
 			Assert.Throws<ArgumentException>(ps.Validate);
-			j.SetterDelegate(SampleJsonPath);
+			j.SetterDelegate(GetSampleJsonPath("sample_getTaskIdByName.json"));
 			Assert.DoesNotThrow(ps.Validate);
 		}
 
@@ -116,7 +130,7 @@ namespace Test.Tac.MetaServlet.Client
 		{
 			// Arrange
 			var ps = new Parameters();
-			ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J")).SetterDelegate(SampleJsonPath);
+			ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J")).SetterDelegate(GetSampleJsonPath("sample_getTaskIdByName.json"));
 			var m = ps.GetMetaData().First((arg) => arg.OptionName.Equals("/H"));
 
 			// Act
@@ -134,7 +148,7 @@ namespace Test.Tac.MetaServlet.Client
 		{
 			// Arrange
 			var ps = new Parameters();
-			ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J")).SetterDelegate(SampleJsonPath);
+			ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J")).SetterDelegate(GetSampleJsonPath("sample_getTaskIdByName.json"));
 			var m = ps.GetMetaData().First((arg) => arg.OptionName.Equals("/P"));
 
 			// Act
@@ -152,7 +166,7 @@ namespace Test.Tac.MetaServlet.Client
 		{
 			// Arrange
 			var ps = new Parameters();
-			ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J")).SetterDelegate(SampleJsonPath);
+			ps.GetMetaData().First((arg) => arg.OptionName.Equals("/J")).SetterDelegate(GetSampleJsonPath("sample_getTaskIdByName.json"));
 			var m = ps.GetMetaData().First((arg) => arg.OptionName.Equals("/T"));
 
 			// Act
