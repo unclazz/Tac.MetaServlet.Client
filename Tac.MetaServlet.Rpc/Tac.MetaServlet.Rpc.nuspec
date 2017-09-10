@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Tac.MetaServlet.Rpc</id><!--id>$id$</id-->
-    <version>1.1.0.0</version><!--version>$version$</version-->
+    <version>1.1.1.0</version><!--version>$version$</version-->
     <!--title>$title$</title-->
     <authors>unclazz.org</authors><!--authors>$author$</authors-->
     <!--owners>$author$</owners-->
@@ -15,7 +15,7 @@
     <copyright>Copyright 2017</copyright>
     <!--tags>Tag1 Tag2</tags-->
     <dependencies>
-      <dependency id="Unclazz.Commons.Json" version="1.2.1.0" />
+      <dependency id="Unclazz.Commons.Json" version="1.2.2.0" />
     </dependencies>
   </metadata>
   <files>
