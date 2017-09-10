@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using Tac.MetaServlet.Client;
 
 namespace Test.Tac.MetaServlet.Client
@@ -91,9 +92,9 @@ namespace Test.Tac.MetaServlet.Client
 			var ec2 = m.FormatMessage("label", "foo\r\nbar\n\nbaz\r");
 
 			// Assert
-			Assert.That(ec0, Is.EqualTo("らべる: foo\n        bar\n        baz"));
-			Assert.That(ec1, Is.EqualTo("label: foo\n       bar\n       baz"));
-			Assert.That(ec2, Is.EqualTo("label: foo\n       bar\n       baz"));
+			Assert.That(ec0, Is.EqualTo("らべる: foo\n        bar\n        baz".Replace("\n", Environment.NewLine)));
+			Assert.That(ec1, Is.EqualTo("label: foo\n       bar\n       baz".Replace("\n", Environment.NewLine)));
+			Assert.That(ec2, Is.EqualTo("label: foo\n       bar\n       baz".Replace("\n", Environment.NewLine)));
 		}
 	}
 }
